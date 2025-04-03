@@ -1,0 +1,27 @@
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown__list {
+  position: absolute;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+}
+
+.dropdown__listItem {
+  display: flex;
+  padding: 5px;
+  cursor: pointer;
+  align-items: center;
+  gap: 5px;
+}
+
+.dropdown__listItem:hover {
+  background: #eee;
+}

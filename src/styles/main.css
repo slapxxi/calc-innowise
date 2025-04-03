@@ -1,0 +1,223 @@
+@import '@/styles/normalize.css';
+@import '@/styles/dropdown.css';
+@import '@/styles/utility.css';
+
+.default-theme {
+  --color-normal: #7d7d7d; /* Gray (Button background) */
+  --color-calc: #535353; /* Dark Gray (Window top bar) */
+  --color-operator: #ff9f0a; /* Orange (Operator buttons) */
+  --color-special: #646464; /* Medium Gray (Button background) */
+  --color-text: #ededed; /* Slightly lighter gray */
+}
+
+:root {
+  --max-w: 375px;
+
+  --background-color: var(--color-bg);
+  --text-color: var(--color-text);
+  --font-family: 'Arial', sans-serif;
+
+  --text-lg: 6.4rem;
+  --text-md: 3.2rem;
+
+  --calc-bg: var(--color-calc);
+
+  --button-bg: var(--color-normal);
+  --button-fg: var(--color-text);
+
+  --operator-bg: var(--color-operator);
+  --operator-fg: var(--color-text);
+
+  --special-bg: var(--color-special);
+  --special-fg: var(--color-text);
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+}
+
+.header {
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  padding: 2rem 0;
+  background-color: var(--background-color);
+}
+
+.icon {
+  background-color: transparent;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.calc {
+  background-color: var(--calc-bg);
+  flex: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 110px repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 2px;
+  grid-template-areas:
+    'out out out out'
+    's1 s2 s3 op1'
+    'b1 b2 b3 op2'
+    'b4 b5 b6 op3'
+    'b7 b8 b9 op4'
+    'b0 b0 com op5';
+}
+
+.output {
+  display: flex;
+  justify-content: end;
+  align-items: flex-end;
+  grid-area: out;
+  color: var(--text-color);
+  padding-right: 1rem;
+  font-size: var(--text-lg);
+  font-size: clamp(2.4rem, 4cqi, 6.2rem);
+}
+
+.button {
+  --bg: var(--button-bg);
+  --fg: var(--button-fg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg);
+  font-weight: 500;
+  font-size: var(--text-md);
+  color: var(--fg);
+}
+
+.button:hover {
+  filter: brightness(0.9);
+}
+
+.button:active {
+  filter: brightness(0.8);
+}
+
+.button_operator {
+  --bg: var(--operator-bg);
+  --fg: var(--operator-fg);
+}
+
+.button_special {
+  background-color: var(--special-bg);
+  color: var(--special-fg);
+}
+
+.button_active {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+.button_com {
+  grid-area: com;
+}
+
+.button_op1 {
+  grid-area: op1;
+}
+
+.button_op2 {
+  grid-area: op2;
+}
+
+.button_op3 {
+  grid-area: op3;
+}
+.button_op4 {
+  grid-area: op4;
+}
+.button_s1 {
+  grid-area: s1;
+}
+.button_s2 {
+  grid-area: s2;
+}
+.button_s3 {
+  grid-area: s3;
+}
+
+.button_0 {
+  grid-area: b0;
+}
+
+.button_1 {
+  grid-area: b1;
+}
+
+.button_2 {
+  grid-area: b2;
+}
+
+.button_3 {
+  grid-area: b3;
+}
+
+.button_4 {
+  grid-area: b4;
+}
+
+.button_5 {
+  grid-area: b5;
+}
+
+.button_6 {
+  grid-area: b6;
+}
+
+.button_7 {
+  grid-area: b7;
+}
+
+.button_8 {
+  grid-area: b8;
+}
+
+.button_9 {
+  grid-area: b9;
+}
+
+.button_0 {
+  grid-area: b0;
+}
+
+@media screen and (min-width: 768px) {
+  .header {
+    max-width: var(--max-w);
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+  }
+
+  .calc {
+    max-width: var(--max-w);
+    min-height: 500px;
+    flex: 0 0 auto;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.3),
+      0 0 25px rgba(0, 0, 0, 0.2);
+    filter: url('#borderFilter');
+  }
+}

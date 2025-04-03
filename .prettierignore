@@ -1,0 +1,9 @@
+# Ignore all test files
+**/*.test.js
+**/*.spec.js
+
+package-lock.json
+
+# Ignore build output
+dist/
+build/
