@@ -12,7 +12,6 @@ const output = document.querySelector('.output');
 try {
   const containerElement = document.querySelector('.calc');
   containerElement.addEventListener('click', handleClick);
-  global.addEventListener('resize', (e) => {});
 } catch (e) {
   console.error('Error selecting container element:', e);
 }
@@ -308,16 +307,6 @@ function operate(a, b, operator) {
       throw new Error(`Unknown operator: ${operator}`);
   }
   return String(result);
-}
-
-/**
- * Calculates the font size based on the length of the value.
- * @param {string} value - The value for which to calculate the font size.
- * @param {HTMLElement} output - The value for which to calculate the font size.
- * @returns {number} The calculated font size in rem.
- */
-function calculateOutputFontSize(output, value) {
-  const rect = output.getBoundingClientRect();
 }
 
 function highlightActiveOperator(operator) {
