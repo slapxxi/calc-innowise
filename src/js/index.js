@@ -28,7 +28,7 @@ function handleClick(e) {
     console.table(nextState);
 
     // update output
-    output.textContent = nextState.context.value;
+    output.textContent = nextState.context.value.replace('.', ',');
 
     if (nextState.context.value === '0') {
       changeClearButtonText('AC');
@@ -121,7 +121,7 @@ function send(state, event) {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: state.context.value + ',' },
+          context: { ...state.context, value: state.context.value + '.' },
         };
       }
       break;
@@ -142,13 +142,13 @@ function send(state, event) {
         return { ...state, context: { ...state.context, value: '0' } };
       }
       if (event.type === 'comma') {
-        if (state.context.value.includes(',')) {
+        if (state.context.value.includes('.')) {
           return state;
         }
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: state.context.value + ',' },
+          context: { ...state.context, value: state.context.value + '.' },
         };
       }
       if (event.type === 'result') {
@@ -225,9 +225,7 @@ function send(state, event) {
           status: 'waiting',
           context: {
             ...state.context,
-            value: String(
-              -parseFloat(state.context.value.replace(',', '.'))
-            ).replace('.', ','),
+            value: String(-parseFloat(state.context.value)),
           },
         };
       }
@@ -322,8 +320,8 @@ function send(state, event) {
 }
 
 function operate(a, b, operator) {
-  a = parseFloat(a.replace(',', '.'));
-  b = parseFloat(b.replace(',', '.'));
+  a = parseFloat(a);
+  b = parseFloat(b);
   let result;
   switch (operator) {
     case '+':
@@ -345,9 +343,9 @@ function operate(a, b, operator) {
       throw new Error(`Unknown operator: ${operator}`);
   }
   if (Number.isInteger(result)) {
-    return String(result).replace('.', ',');
+    return String(result);
   }
-  return String(result.toFixed(8)).replace('.', ',');
+  return String(result.toFixed(8));
 }
 
 function highlightActiveOperator(operator) {
@@ -390,7 +388,7 @@ function truncateNumber(value) {
   let startingIndex = 0;
   for (let i = 0; i < value.length; i++) {
     const char = value[i];
-    if (char === ',') {
+    if (char === '.') {
       isFloat = true;
       startingIndex = i;
       break;
