@@ -5,7 +5,7 @@ import '@/js/dropdown.js';
 /** @type {State} */
 let calculatorState = {
   status: 'idle',
-  context: { value: '0', operator: null, operand: null, result: null },
+  context: { value: '0', operator: null, operand: null },
 };
 
 const output = document.querySelector('.output');
@@ -30,7 +30,10 @@ function handleClick(e) {
     // update output
     output.textContent = nextState.context.value.replace('.', ',');
 
-    if (nextState.context.value === '0') {
+    if (
+      nextState.context.value === '0' ||
+      nextState.context.value === 'Error'
+    ) {
       changeClearButtonText('AC');
     } else {
       changeClearButtonText('C');
@@ -49,18 +52,17 @@ function handleClick(e) {
 }
 
 /**
- * @typedef {'idle' | 'waiting' | 'calculating' | 'result'} Status
+ * @typedef {'idle' | 'waiting' | 'calculating' | 'result' } Status
  * The status of the calculator.
  * - 'idle': The calculator is waiting for user input.
  * - 'waiting': The calculator is waiting for a digit or operator input.
  * - 'calculating': The calculator is performing a calculation.
- * - 'result': The calculator has displayed a result.
+ * - 'result': The calculator has produced a result.
  */
 
 /** @typedef {Object} Context
  * @property {string} value - The current value displayed on the calculator.
  * @property {string|null} operand - The current operand selected by the user.
- * @property {string|null} result - The result of the last calculation.
  * @property {string|null} operator - The current operator selected by the user.
  */
 
@@ -139,7 +141,11 @@ function send(state, event) {
             },
           };
         }
-        return { ...state, context: { ...state.context, value: '0' } };
+        return {
+          ...state,
+          status: 'calculating',
+          context: { ...state.context, value: '0' },
+        };
       }
       if (event.type === 'comma') {
         if (state.context.value.includes('.')) {
@@ -152,20 +158,30 @@ function send(state, event) {
         };
       }
       if (event.type === 'result') {
-        if (state.context.operator === null) {
+        if (state.context.operand === null) {
           return state;
+        }
+        let value = operate(
+          state.context.operand,
+          state.context.value,
+          state.context.operator
+        );
+        if (value === 'Error') {
+          return {
+            ...state,
+            status: 'idle',
+            context: {
+              ...state.context,
+              value: 'Error',
+              operand: null,
+              operator: null,
+            },
+          };
         }
         return {
           ...state,
           status: 'result',
-          context: {
-            ...state.context,
-            value: operate(
-              state.context.operand,
-              state.context.value,
-              state.context.operator
-            ),
-          },
+          context: { ...state.context, value, operand: state.context.value },
         };
       }
       if (event.type === 'digit') {
@@ -208,6 +224,18 @@ function send(state, event) {
           state.context.value,
           state.context.operator
         );
+        if (value === 'Error') {
+          return {
+            ...state,
+            status: 'idle',
+            context: {
+              ...state.context,
+              value: 'Error',
+              operand: null,
+              operator: null,
+            },
+          };
+        }
         return {
           ...state,
           status: 'calculating',
@@ -265,32 +293,35 @@ function send(state, event) {
           context: { ...state.context, operator: event.value },
         };
       }
-      break;
-    case 'result':
-      if (event.type === 'clear') {
-        return {
-          ...state,
-          status: 'idle',
-          context: {
-            ...state.context,
-            value: '0',
-            operand: null,
-            operator: null,
-          },
-        };
-      }
       if (event.type === 'result') {
+        let value = operate(
+          state.context.value,
+          state.context.operand,
+          state.context.operator
+        );
+        if (value === 'Error') {
+          return {
+            ...state,
+            status: 'idle',
+            context: { ...state.context, value, operand: null, operator: null },
+          };
+        }
         return {
           ...state,
           status: 'result',
           context: {
             ...state.context,
-            value: operate(
-              state.context.value,
-              state.context.operand,
-              state.context.operator
-            ),
+            value,
           },
+        };
+      }
+      break;
+    case 'result':
+      if (event.type === 'digit') {
+        return {
+          ...state,
+          status: 'waiting',
+          context: { ...state.context, value: event.value },
         };
       }
       if (event.type === 'operator') {
@@ -304,11 +335,57 @@ function send(state, event) {
           },
         };
       }
-      if (event.type === 'digit') {
+      if (event.type === 'result') {
+        return {
+          ...state,
+          context: {
+            ...state.context,
+            value: operate(
+              state.context.value,
+              state.context.operand,
+              state.context.operator
+            ),
+          },
+        };
+      }
+      if (event.type === 'clear') {
+        if (state.context.value === '0') {
+          return {
+            ...state,
+            status: 'idle',
+            context: {
+              ...state.context,
+              value: '0',
+              operator: null,
+              operand: null,
+            },
+          };
+        }
+        return { ...state, context: { ...state.context, value: '0' } };
+      }
+      if (event.type === 'negate') {
+        return {
+          ...state,
+          context: {
+            ...state.context,
+            value: String(-parseFloat(state.context.value)),
+          },
+        };
+      }
+      if (event.type === 'percentage') {
+        return {
+          ...state,
+          context: {
+            ...state.context,
+            value: toPercentage(state.context.value),
+          },
+        };
+      }
+      if (event.type === 'comma') {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: event.value },
+          context: { ...state.context, value: '0.' },
         };
       }
       break;
@@ -335,12 +412,15 @@ function operate(a, b, operator) {
       break;
     case '/':
       if (b === 0) {
-        throw new Error('Division by zero');
+        result = NaN;
       }
       result = a / b;
       break;
     default:
       throw new Error(`Unknown operator: ${operator}`);
+  }
+  if (isNaN(result)) {
+    return 'Error';
   }
   if (Number.isInteger(result)) {
     return String(result);
@@ -398,4 +478,17 @@ function truncateNumber(value) {
     return value.slice(0, startingIndex + 9);
   }
   return value;
+}
+
+/**
+ * Converts a number to a percentage string.
+ * @param {string} value - The number to convert.
+ * @returns {string} The percentage string.
+ */
+function toPercentage(value) {
+  const number = parseFloat(value);
+  if (isNaN(number)) {
+    throw new Error(`Invalid number: ${value}`);
+  }
+  return String(number * 0.01);
 }
