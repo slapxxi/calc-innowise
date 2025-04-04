@@ -2,9 +2,10 @@
 import '@/styles/main.css';
 import '@/js/dropdown.js';
 
+/** @type {State} */
 let calculatorState = {
   status: 'idle',
-  context: { value: '0', operator: null, operand: null },
+  context: { value: '0', operator: null, operand: null, result: null },
 };
 
 const output = document.querySelector('.output');
@@ -58,8 +59,9 @@ function handleClick(e) {
 
 /** @typedef {Object} Context
  * @property {string} value - The current value displayed on the calculator.
- * @property {string|null} operator - The current operator selected by the user.
  * @property {string|null} operand - The current operand selected by the user.
+ * @property {string|null} result - The result of the last calculation.
+ * @property {string|null} operator - The current operator selected by the user.
  */
 
 /**
@@ -94,6 +96,16 @@ function send(state, event) {
           context: { ...state.context, value: event.value },
         };
       }
+      if (event.type === 'negate') {
+        return {
+          ...state,
+          status: 'waiting',
+          context: {
+            ...state.context,
+            value: '-0',
+          },
+        };
+      }
       if (event.type === 'operator') {
         return {
           ...state,
@@ -105,10 +117,17 @@ function send(state, event) {
           },
         };
       }
+      if (event.type === 'comma') {
+        return {
+          ...state,
+          status: 'waiting',
+          context: { ...state.context, value: state.context.value + ',' },
+        };
+      }
       break;
     case 'waiting':
       if (event.type === 'clear') {
-        if (state.context.value === '0') {
+        if (state.context.value === '0' || state.context.operand === null) {
           return {
             ...state,
             status: 'idle',
@@ -121,6 +140,16 @@ function send(state, event) {
           };
         }
         return { ...state, context: { ...state.context, value: '0' } };
+      }
+      if (event.type === 'comma') {
+        if (state.context.value.includes(',')) {
+          return state;
+        }
+        return {
+          ...state,
+          status: 'waiting',
+          context: { ...state.context, value: state.context.value + ',' },
+        };
       }
       if (event.type === 'result') {
         if (state.context.operator === null) {
@@ -140,6 +169,13 @@ function send(state, event) {
         };
       }
       if (event.type === 'digit') {
+        // special case of -0 like in IOS calculator
+        if (state.context.value === '-0') {
+          return {
+            ...state,
+            context: { ...state.context, value: '-' + event.value },
+          };
+        }
         let value;
         if (state.context.value === '0') {
           value = event.value;
@@ -151,7 +187,7 @@ function send(state, event) {
           status: 'waiting',
           context: {
             ...state.context,
-            value,
+            value: truncateNumber(value),
           },
         };
       }
@@ -179,7 +215,7 @@ function send(state, event) {
             ...state.context,
             value,
             operator: event.value,
-            operand: value,
+            operand: state.context.value,
           },
         };
       }
@@ -189,7 +225,9 @@ function send(state, event) {
           status: 'waiting',
           context: {
             ...state.context,
-            value: String(-parseFloat(state.context.value)),
+            value: String(
+              -parseFloat(state.context.value.replace(',', '.'))
+            ).replace('.', ','),
           },
         };
       }
@@ -284,8 +322,8 @@ function send(state, event) {
 }
 
 function operate(a, b, operator) {
-  a = parseFloat(a);
-  b = parseFloat(b);
+  a = parseFloat(a.replace(',', '.'));
+  b = parseFloat(b.replace(',', '.'));
   let result;
   switch (operator) {
     case '+':
@@ -306,7 +344,10 @@ function operate(a, b, operator) {
     default:
       throw new Error(`Unknown operator: ${operator}`);
   }
-  return String(result);
+  if (Number.isInteger(result)) {
+    return String(result).replace('.', ',');
+  }
+  return String(result.toFixed(8)).replace('.', ',');
 }
 
 function highlightActiveOperator(operator) {
@@ -337,4 +378,26 @@ function removeActiveOperator() {
 function changeClearButtonText(text) {
   const clearButton = document.querySelector('[data-type="clear"]');
   clearButton.textContent = text;
+}
+
+/**
+ * Truncates a number to 8 decimal places.
+ * @param {string} value - The number to truncate.
+ * @returns {string} The truncated number.
+ */
+function truncateNumber(value) {
+  let isFloat = false;
+  let startingIndex = 0;
+  for (let i = 0; i < value.length; i++) {
+    const char = value[i];
+    if (char === ',') {
+      isFloat = true;
+      startingIndex = i;
+      break;
+    }
+  }
+  if (isFloat) {
+    return value.slice(0, startingIndex + 9);
+  }
+  return value;
 }

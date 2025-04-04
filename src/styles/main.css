@@ -142,12 +142,19 @@ body {
 .button_op4 {
   grid-area: op4;
 }
+
+.button_op5 {
+  grid-area: op5;
+}
+
 .button_s1 {
   grid-area: s1;
 }
+
 .button_s2 {
   grid-area: s2;
 }
+
 .button_s3 {
   grid-area: s3;
 }
