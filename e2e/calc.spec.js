@@ -439,7 +439,7 @@ test.describe('Calculator', () => {
       await expect(output).toHaveText('579');
     });
 
-    test('pressiing operator produces result', async ({ page }) => {
+    test('pressing operator produces result', async ({ page }) => {
       let op = page.getByTestId('+');
       await op.click();
       const output = page.getByTestId('output');
@@ -453,6 +453,26 @@ test.describe('Calculator', () => {
       await expect(output).toHaveText('5,79');
       await page.getByTestId('%').click();
       await expect(output).toHaveText('0,0579');
+    });
+  });
+
+  test.describe('when chaining operators', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.getByTestId('button-1').click();
+      await page.getByTestId('button-0').click();
+      await page.getByTestId('button-0').click();
+      await page.getByTestId('+').click();
+      await page.getByTestId('button-2').click();
+      await page.getByTestId('button-0').click();
+    });
+
+    test('pressing operator produces result', async ({ page }) => {
+      await page.getByTestId('+').click();
+      await page.getByTestId('button-3').click();
+      await page.getByTestId('button-5').click();
+      await page.getByTestId('+').click();
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('155');
     });
   });
 });

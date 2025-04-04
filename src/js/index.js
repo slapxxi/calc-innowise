@@ -243,7 +243,7 @@ function send(state, event) {
             ...state.context,
             value,
             operator: event.value,
-            operand: state.context.value,
+            operand: value,
           },
         };
       }
