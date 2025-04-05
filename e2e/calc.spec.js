@@ -685,9 +685,7 @@ test.describe('Calculator', () => {
     });
 
     test('produces percentage of a previous number', async ({ page }) => {
-      await page.getByTestId('button-6').click();
-      await page.getByTestId('button-0').click();
-      await page.getByTestId('button-0').click();
+      await typeNumber(page, '600');
       await page.getByTestId('*').click();
       await page.getByTestId('button-1').click();
       await page.getByTestId('button-5').click();
@@ -699,9 +697,7 @@ test.describe('Calculator', () => {
     test('produces percentage of an operation with no second number', async ({
       page,
     }) => {
-      await page.getByTestId('button-1').click();
-      await page.getByTestId('button-2').click();
-      await page.getByTestId('button-0').click();
+      await typeNumber(page, '120');
       await page.getByTestId('+').click();
       await page.getByTestId('%').click();
       const output = page.getByTestId('output');
@@ -711,15 +707,38 @@ test.describe('Calculator', () => {
     });
 
     test('produces correct result', async ({ page }) => {
-      await page.getByTestId('button-3').click();
-      await page.getByTestId('button-4').click();
+      await typeNumber(page, '34');
       await page.getByTestId('+').click();
       await page.getByTestId('button-7').click();
       await page.getByTestId('%').click();
       const output = page.getByTestId('output');
-      await expect(output).toHaveText('2.38');
+      await expect(output).toHaveText('2,38');
       await page.getByTestId('=').click();
-      await expect(output).toHaveText('36.38');
+      await expect(output).toHaveText('36,38');
     });
   });
 });
+
+/**
+ * Types a number into the calculator.
+ * @param {import('@playwright/test').Page} page - The Playwright page object.
+ * @param {string} value - The number to type.
+ */
+async function typeNumber(page, value) {
+  const c = value
+    .split('')
+    .map(mapButtons)
+    .map((c) => page.getByTestId(`${c}`));
+  for await (const d of c) {
+    await d.click();
+  }
+}
+
+function mapButtons(c) {
+  switch (c) {
+    case ',':
+      return ',';
+    default:
+      return `button-${c}`;
+  }
+}
