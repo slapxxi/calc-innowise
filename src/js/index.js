@@ -147,6 +147,16 @@ function send(state, event) {
           context: { ...state.context, value: '0' },
         };
       }
+      if (event.type === 'percentage') {
+        return {
+          ...state,
+          status: 'waiting',
+          context: {
+            ...state.context,
+            value: toPercentage(state.context.value),
+          },
+        };
+      }
       if (event.type === 'comma') {
         if (state.context.value.includes('.')) {
           return state;
@@ -260,16 +270,19 @@ function send(state, event) {
       break;
     case 'calculating':
       if (event.type === 'clear') {
-        return {
-          ...state,
-          status: 'idle',
-          context: {
-            ...state.context,
-            value: '0',
-            operand: null,
-            operator: null,
-          },
-        };
+        if (state.context.operand === null || state.context.value === '0') {
+          return {
+            ...state,
+            status: 'idle',
+            context: {
+              ...state.context,
+              value: '0',
+              operand: null,
+              operator: null,
+            },
+          };
+        }
+        return { ...state, context: { ...state.context, value: '0' } };
       }
       if (event.type === 'negate') {
         return {
@@ -312,7 +325,24 @@ function send(state, event) {
           context: {
             ...state.context,
             value,
+            operand: state.context.value,
           },
+        };
+      }
+      if (event.type === 'percentage') {
+        return {
+          ...state,
+          context: {
+            ...state.context,
+            value: toPercentage(state.context.value),
+          },
+        };
+      }
+      if (event.type === 'comma') {
+        return {
+          ...state,
+          status: 'waiting',
+          context: { ...state.context, value: '0.' },
         };
       }
       break;
@@ -425,7 +455,7 @@ function operate(a, b, operator) {
   if (Number.isInteger(result)) {
     return String(result);
   }
-  return String(result.toFixed(8));
+  return removeTrailingZeroes(String(result.toFixed(8)));
 }
 
 function highlightActiveOperator(operator) {
@@ -491,4 +521,8 @@ function toPercentage(value) {
     throw new Error(`Invalid number: ${value}`);
   }
   return String(number * 0.01);
+}
+
+function removeTrailingZeroes(str) {
+  return str.replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0+$/, '');
 }
