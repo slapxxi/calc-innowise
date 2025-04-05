@@ -322,14 +322,6 @@ test.describe('Calculator', () => {
       await expect(output).toHaveText('123');
     });
 
-    test('pressing percentage produces correct result', async ({ page }) => {
-      await page.getByTestId('%').click();
-      const output = page.getByTestId('output');
-      await expect(output).toHaveText('1,23');
-      await page.getByTestId('%').click();
-      await expect(output).toHaveText('0,0123');
-    });
-
     test('divides with other number', async ({ page }) => {
       await page.getByTestId('/').click();
       await expect(page.getByTestId('/')).toHaveClass(/button_active/);
@@ -512,14 +504,6 @@ test.describe('Calculator', () => {
       });
     });
 
-    test('pressing percentage produces correct result', async ({ page }) => {
-      await page.getByTestId('%').click();
-      const output = page.getByTestId('output');
-      await expect(output).toHaveText('1,2');
-      await page.getByTestId('%').click();
-      await expect(output).toHaveText('0,012');
-    });
-
     test('can change operator', async ({ page }) => {
       await page.getByTestId('-').click();
       const button = page.getByTestId('-');
@@ -648,14 +632,6 @@ test.describe('Calculator', () => {
       await expect(output).toHaveText('579');
       await expect(op).toHaveClass(/button_active/);
     });
-
-    test('pressing percentage produces correct result', async ({ page }) => {
-      await page.getByTestId('%').click();
-      const output = page.getByTestId('output');
-      await expect(output).toHaveText('5,79');
-      await page.getByTestId('%').click();
-      await expect(output).toHaveText('0,0579');
-    });
   });
 
   test.describe('when chaining operators', () => {
@@ -695,6 +671,55 @@ test.describe('Calculator', () => {
       await page.getByTestId('C').click();
       const output = page.getByTestId('output');
       await expect(output).toHaveText('0');
+    });
+  });
+
+  test.describe('percentage', () => {
+    test('produces percentage of a single number', async ({ page }) => {
+      await page.getByTestId('button-1').click();
+      await page.getByTestId('button-2').click();
+      await page.getByTestId('button-0').click();
+      await page.getByTestId('%').click();
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('1,2');
+    });
+
+    test('produces percentage of a previous number', async ({ page }) => {
+      await page.getByTestId('button-6').click();
+      await page.getByTestId('button-0').click();
+      await page.getByTestId('button-0').click();
+      await page.getByTestId('*').click();
+      await page.getByTestId('button-1').click();
+      await page.getByTestId('button-5').click();
+      await page.getByTestId('%').click();
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('90');
+    });
+
+    test('produces percentage of an operation with no second number', async ({
+      page,
+    }) => {
+      await page.getByTestId('button-1').click();
+      await page.getByTestId('button-2').click();
+      await page.getByTestId('button-0').click();
+      await page.getByTestId('+').click();
+      await page.getByTestId('%').click();
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('144');
+      await page.getByTestId('%').click();
+      await expect(output).toHaveText('172,8');
+    });
+
+    test('produces correct result', async ({ page }) => {
+      await page.getByTestId('button-3').click();
+      await page.getByTestId('button-4').click();
+      await page.getByTestId('+').click();
+      await page.getByTestId('button-7').click();
+      await page.getByTestId('%').click();
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('2.38');
+      await page.getByTestId('=').click();
+      await expect(output).toHaveText('36.38');
     });
   });
 });

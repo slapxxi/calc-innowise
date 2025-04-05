@@ -95,19 +95,6 @@ export function truncateNumber(value) {
 }
 
 /**
- * Converts a number to a percentage string.
- * @param {string} value - The number to convert.
- * @returns {string} The percentage string.
- */
-export function toPercentage(value) {
-  const number = parseFloat(value);
-  if (isNaN(number)) {
-    throw new Error(`Invalid number: ${value}`);
-  }
-  return String(number * 0.01);
-}
-
-/**
  * Removes trailing zeroes from a string representation of a number.
  * @param {string} str - The string to process.
  * @returns {string} The processed string without trailing zeroes.
@@ -127,4 +114,17 @@ export function isExponential(num) {
 
 export function normalizeOutput(value) {
   return value.replace('.', ',');
+}
+
+/**
+ * Calculates the percentage of a value based on an operand.
+ * @param {string} operand - The operand (percentage).
+ * @param {string} percentage - The value to calculate the percentage of.
+ * @returns {string} The calculated percentage as a string.
+ */
+export function calcPercentage(operand, percentage) {
+  const op = parseFloat(operand);
+  const p = parseFloat(percentage);
+  const result = (op / 100) * p;
+  return String(result);
 }

@@ -5,7 +5,7 @@ import {
   changeClearButtonText,
   removeActiveOperator,
   truncateNumber,
-  toPercentage,
+  calcPercentage,
   normalizeOutput,
   operate,
   highlightActiveOperator,
@@ -43,7 +43,6 @@ function handleClick(e) {
       const nextState = send(calculatorState, calcEvent);
 
       const output = document.querySelector('.output');
-      // update output
       if (output) {
         output.textContent = normalizeOutput(nextState.context.value);
       }
@@ -173,12 +172,20 @@ function send(state, event) {
         };
       }
       if (event.type === 'percentage') {
+        if (state.context.operand === null) {
+          return {
+            ...state,
+            context: {
+              ...state.context,
+              value: calcPercentage(state.context.value, '1'),
+            },
+          };
+        }
         return {
           ...state,
-          status: 'waiting',
           context: {
             ...state.context,
-            value: toPercentage(state.context.value),
+            value: calcPercentage(state.context.operand, state.context.value),
           },
         };
       }
@@ -359,7 +366,7 @@ function send(state, event) {
           ...state,
           context: {
             ...state.context,
-            value: toPercentage(state.context.value),
+            value: calcPercentage(state.context.operand, state.context.value),
           },
         };
       }
@@ -432,7 +439,7 @@ function send(state, event) {
           ...state,
           context: {
             ...state.context,
-            value: toPercentage(state.context.value),
+            value: calcPercentage(state.context.value, '1'),
           },
         };
       }
