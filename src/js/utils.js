@@ -126,5 +126,14 @@ export function calcPercentage(operand, percentage) {
   const op = parseFloat(operand);
   const p = parseFloat(percentage);
   const result = (op / 100) * p;
-  return String(result);
+  return removeTrailingZeroes(String(result.toFixed(8)));
+}
+
+/**
+ * Negates a number represented as a string.
+ * @param {string} value - The number to negate.
+ * @returns {string} The negated number as a string.
+ */
+export function negate(value) {
+  return String(-parseFloat(value));
 }

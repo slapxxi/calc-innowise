@@ -9,6 +9,7 @@ import {
   normalizeOutput,
   operate,
   highlightActiveOperator,
+  negate,
 } from '@/js/utils.js';
 
 /** @type {CalcState} */
@@ -41,6 +42,7 @@ function handleClick(e) {
       let calcEvent = { type, value };
       // @ts-ignore
       const nextState = send(calculatorState, calcEvent);
+      console.table(nextState);
 
       const output = document.querySelector('.output');
       if (output) {
@@ -321,7 +323,8 @@ function send(state, event) {
           ...state,
           context: {
             ...state.context,
-            value: String(-parseFloat(state.context.value)),
+            value: negate(state.context.value),
+            operand: negate(state.context.operand),
           },
         };
       }
