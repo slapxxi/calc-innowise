@@ -1,6 +1,15 @@
 // @ts-check
 import '@/styles/main.css';
 import '@/js/dropdown.js';
+import {
+  changeClearButtonText,
+  removeActiveOperator,
+  truncateNumber,
+  toPercentage,
+  normalizeOutput,
+  operate,
+  highlightActiveOperator,
+} from '@/js/utils.js';
 
 /** @type {CalcState} */
 let calculatorState = {
@@ -27,36 +36,37 @@ try {
 function handleClick(e) {
   if (e.target instanceof HTMLElement && e.target.dataset) {
     const { type, value } = e.target.dataset;
-    let calcEvent = { type, value };
-    // @ts-ignore
-    const nextState = send(calculatorState, calcEvent);
 
-    console.table(nextState);
+    if (type) {
+      let calcEvent = { type, value };
+      // @ts-ignore
+      const nextState = send(calculatorState, calcEvent);
 
-    const output = document.querySelector('.output');
-    // update output
-    if (output) {
-      output.textContent = nextState.context.value.replace('.', ',');
+      const output = document.querySelector('.output');
+      // update output
+      if (output) {
+        output.textContent = normalizeOutput(nextState.context.value);
+      }
+
+      if (
+        nextState.context.value === '0' ||
+        nextState.context.value === 'Error'
+      ) {
+        changeClearButtonText('AC');
+      } else {
+        changeClearButtonText('C');
+      }
+
+      // highlight active button when operator is selected
+      if (nextState.status === 'calculating') {
+        removeActiveOperator();
+        highlightActiveOperator(nextState.context.operator);
+      } else {
+        removeActiveOperator();
+      }
+
+      calculatorState = nextState;
     }
-
-    if (
-      nextState.context.value === '0' ||
-      nextState.context.value === 'Error'
-    ) {
-      changeClearButtonText('AC');
-    } else {
-      changeClearButtonText('C');
-    }
-
-    // highlight active button when operator is selected
-    if (nextState.status === 'calculating') {
-      removeActiveOperator();
-      highlightActiveOperator(nextState.context.operator);
-    } else {
-      removeActiveOperator();
-    }
-
-    calculatorState = nextState;
   }
 }
 
@@ -448,119 +458,4 @@ function send(state, event) {
   }
 
   return state;
-}
-
-function operate(a, b, operator) {
-  a = parseFloat(a);
-  b = parseFloat(b);
-  let result;
-  switch (operator) {
-    case '+':
-      result = a + b;
-      break;
-    case '-':
-      result = a - b;
-      break;
-    case '*':
-      result = a * b;
-      break;
-    case '/':
-      if (b === 0) {
-        result = NaN;
-      }
-      result = a / b;
-      break;
-    default:
-      throw new Error(`Unknown operator: ${operator}`);
-  }
-  if (isNaN(result)) {
-    return 'Error';
-  }
-  if (Number.isInteger(result)) {
-    return String(result);
-  }
-  return removeTrailingZeroes(String(result.toFixed(8)));
-}
-
-function highlightActiveOperator(operator) {
-  let el;
-  switch (operator) {
-    case '*':
-      el = document.querySelector('[data-value="*"]');
-      break;
-    case '-':
-      el = document.querySelector('[data-value="-"]');
-      break;
-    case '+':
-      el = document.querySelector('[data-value="+"]');
-      break;
-    case '/':
-      el = document.querySelector('[data-value="/"]');
-      break;
-    default:
-      return;
-  }
-  el?.classList.add('button_active');
-}
-
-/**
- * Removes the active operator highlight from the buttons.
- */
-function removeActiveOperator() {
-  document.querySelector('.button_active')?.classList.remove('button_active');
-}
-
-/**
- * Changes the text of the clear button based on the current state.
- * @param {string} text - The text to set for the clear button.
- */
-function changeClearButtonText(text) {
-  const clearButton = document.querySelector('[data-type="clear"]');
-  if (clearButton) {
-    clearButton.textContent = text;
-  }
-}
-
-/**
- * Truncates a number to 8 decimal places.
- * @param {string} value - The number to truncate.
- * @returns {string} The truncated number.
- */
-function truncateNumber(value) {
-  let isFloat = false;
-  let startingIndex = 0;
-  for (let i = 0; i < value.length; i++) {
-    const char = value[i];
-    if (char === '.') {
-      isFloat = true;
-      startingIndex = i;
-      break;
-    }
-  }
-  if (isFloat) {
-    return value.slice(0, startingIndex + 9);
-  }
-  return value;
-}
-
-/**
- * Converts a number to a percentage string.
- * @param {string} value - The number to convert.
- * @returns {string} The percentage string.
- */
-function toPercentage(value) {
-  const number = parseFloat(value);
-  if (isNaN(number)) {
-    throw new Error(`Invalid number: ${value}`);
-  }
-  return String(number * 0.01);
-}
-
-/**
- * Removes trailing zeroes from a string representation of a number.
- * @param {string} str - The string to process.
- * @returns {string} The processed string without trailing zeroes.
- */
-function removeTrailingZeroes(str) {
-  return str.replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0+$/, '');
 }
