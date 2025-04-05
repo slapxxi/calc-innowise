@@ -677,4 +677,24 @@ test.describe('Calculator', () => {
       await expect(output).toHaveText('155');
     });
   });
+
+  test.describe('when in error state', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.getByTestId('button-0').click();
+      await page.getByTestId('/').click();
+      await page.getByTestId('button-0').click();
+      await page.getByTestId('=').click();
+    });
+
+    test('displays Error', async ({ page }) => {
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('Error');
+    });
+
+    test('pressing clear clears display', async ({ page }) => {
+      await page.getByTestId('C').click();
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('0');
+    });
+  });
 });

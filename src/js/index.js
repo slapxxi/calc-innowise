@@ -2,17 +2,20 @@
 import '@/styles/main.css';
 import '@/js/dropdown.js';
 
-/** @type {State} */
+/** @type {CalcState} */
 let calculatorState = {
   status: 'idle',
   context: { value: '0', operator: null, operand: null },
 };
 
-const output = document.querySelector('.output');
-
 try {
+  /** @type {HTMLFormElement | null} */
   const containerElement = document.querySelector('.calc');
-  containerElement.addEventListener('click', handleClick);
+  if (containerElement) {
+    containerElement.addEventListener('click', handleClick);
+  } else {
+    throw new Error('Container element not found');
+  }
 } catch (e) {
   console.error('Error selecting container element:', e);
 }
@@ -22,13 +25,19 @@ try {
  * @param {MouseEvent} e - The click event triggered by the user.
  */
 function handleClick(e) {
-  if (e.target?.dataset) {
-    const eventType = e.target.dataset;
-    const nextState = send(calculatorState, eventType);
+  if (e.target instanceof HTMLElement && e.target.dataset) {
+    const { type, value } = e.target.dataset;
+    let calcEvent = { type, value };
+    // @ts-ignore
+    const nextState = send(calculatorState, calcEvent);
+
     console.table(nextState);
 
+    const output = document.querySelector('.output');
     // update output
-    output.textContent = nextState.context.value.replace('.', ',');
+    if (output) {
+      output.textContent = nextState.context.value.replace('.', ',');
+    }
 
     if (
       nextState.context.value === '0' ||
@@ -52,7 +61,7 @@ function handleClick(e) {
 }
 
 /**
- * @typedef {'idle' | 'waiting' | 'calculating' | 'result' } Status
+ * @typedef {'idle' | 'waiting' | 'calculating' | 'result' | 'error' } Status
  * The status of the calculator.
  * - 'idle': The calculator is waiting for user input.
  * - 'waiting': The calculator is waiting for a digit or operator input.
@@ -67,22 +76,28 @@ function handleClick(e) {
  */
 
 /**
- * @typedef {Object} State
+ * @typedef {Object} CalcState
  * @property {Status} status - The current status of the calculator.
  * @property {Context} context - The current context of the calculator.
  */
 
 /**
- * @typedef {Object} CalcEvent
- * @property {string} type - The type of event (e.g., 'digit', 'operator', 'clear', 'negate' etc.).
- * @property {string} value - The value associated with the event (e.g., the digit or operator).
+ * @typedef {
+  {type: 'operator', value: '-' | '+' | '*' | '/'} | 
+  {type: 'digit', value: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'} | 
+  {type: 'negate'} | 
+  {type: 'comma'} | 
+  {type: 'clear'} | 
+  {type: 'percentage'} |
+  {type: 'result'}
+  } CalcEvent
  */
 
 /**
  * Sends the current state and event to determine the next state of the calculator.
- * @param {State} state - The current state of the calculator.
+ * @param {CalcState} state - The current state of the calculator.
  * @param {CalcEvent} event - The event triggered by the user.
- * @returns {State} The next state of the calculator after processing the event.
+ * @returns {CalcState} The next state of the calculator after processing the event.
  */
 
 function send(state, event) {
@@ -179,7 +194,7 @@ function send(state, event) {
         if (value === 'Error') {
           return {
             ...state,
-            status: 'idle',
+            status: 'error',
             context: {
               ...state.context,
               value: 'Error',
@@ -315,7 +330,7 @@ function send(state, event) {
         if (value === 'Error') {
           return {
             ...state,
-            status: 'idle',
+            status: 'error',
             context: { ...state.context, value, operand: null, operator: null },
           };
         }
@@ -419,6 +434,15 @@ function send(state, event) {
         };
       }
       break;
+    case 'error':
+      if (event.type === 'clear') {
+        return {
+          ...state,
+          status: 'idle',
+          context: { ...state.context, value: '0' },
+        };
+      }
+      break;
     default:
       return state;
   }
@@ -479,13 +503,22 @@ function highlightActiveOperator(operator) {
   el?.classList.add('button_active');
 }
 
+/**
+ * Removes the active operator highlight from the buttons.
+ */
 function removeActiveOperator() {
   document.querySelector('.button_active')?.classList.remove('button_active');
 }
 
+/**
+ * Changes the text of the clear button based on the current state.
+ * @param {string} text - The text to set for the clear button.
+ */
 function changeClearButtonText(text) {
   const clearButton = document.querySelector('[data-type="clear"]');
-  clearButton.textContent = text;
+  if (clearButton) {
+    clearButton.textContent = text;
+  }
 }
 
 /**
@@ -523,6 +556,11 @@ function toPercentage(value) {
   return String(number * 0.01);
 }
 
+/**
+ * Removes trailing zeroes from a string representation of a number.
+ * @param {string} str - The string to process.
+ * @returns {string} The processed string without trailing zeroes.
+ */
 function removeTrailingZeroes(str) {
   return str.replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0+$/, '');
 }
