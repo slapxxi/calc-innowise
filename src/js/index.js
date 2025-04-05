@@ -297,7 +297,7 @@ function send(state, event) {
           status: 'waiting',
           context: {
             ...state.context,
-            value: String(-parseFloat(state.context.value)),
+            value: negate(state.context.value),
           },
         };
       }
@@ -321,10 +321,10 @@ function send(state, event) {
       if (event.type === 'negate') {
         return {
           ...state,
+          status: 'waiting',
           context: {
             ...state.context,
-            value: negate(state.context.value),
-            operand: negate(state.context.operand),
+            value: '-0',
           },
         };
       }

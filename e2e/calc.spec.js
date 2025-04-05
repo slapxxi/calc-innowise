@@ -453,9 +453,7 @@ test.describe('Calculator', () => {
 
   test.describe('when operator is pressed', () => {
     test.beforeEach(async ({ page }) => {
-      await page.getByTestId('button-1').click();
-      await page.getByTestId('button-2').click();
-      await page.getByTestId('button-0').click();
+      await typeNumber(page, '120');
       await page.getByTestId('+').click();
     });
 
@@ -492,15 +490,15 @@ test.describe('Calculator', () => {
         await page.getByTestId('+-').click();
       });
 
-      test('negates value', async ({ page }) => {
+      test('produces new negative value', async ({ page }) => {
         const output = page.getByTestId('output');
-        await expect(output).toHaveText('-120');
+        await expect(output).toHaveText('-0');
       });
 
       test('pressing again negates back to positive', async ({ page }) => {
         await page.getByTestId('+-').click();
         const output = page.getByTestId('output');
-        await expect(output).toHaveText('120');
+        await expect(output).toHaveText('0');
       });
     });
 
