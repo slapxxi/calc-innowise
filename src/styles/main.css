@@ -72,9 +72,9 @@ body {
   grid-template-areas:
     'out out out out'
     's1 s2 s3 op1'
-    'b1 b2 b3 op2'
+    'b7 b8 b9 op2'
     'b4 b5 b6 op3'
-    'b7 b8 b9 op4'
+    'b1 b2 b3 op4'
     'b0 b0 com op5';
 }
 
