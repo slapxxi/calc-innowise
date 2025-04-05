@@ -4,18 +4,19 @@ import '@/js/dropdown.js';
 import {
   changeClearButtonText,
   removeActiveOperator,
-  truncateNumber,
   calcPercentage,
-  normalizeOutput,
   operate,
   highlightActiveOperator,
   negate,
+  normalizeOutput,
+  truncateNumber,
+  calculatorSmartDisplay,
 } from '@/js/utils.js';
 
 /** @type {CalcState} */
 let calculatorState = {
   status: 'idle',
-  context: { value: '0', operator: null, operand: null },
+  context: { output: '0', value: '0', operator: null, operand: null },
 };
 
 try {
@@ -46,7 +47,7 @@ function handleClick(e) {
 
       const output = document.querySelector('.output');
       if (output) {
-        output.textContent = normalizeOutput(nextState.context.value);
+        output.textContent = nextState.context.output;
       }
 
       if (
@@ -81,7 +82,8 @@ function handleClick(e) {
  */
 
 /** @typedef {Object} Context
- * @property {string} value - The current value displayed on the calculator.
+ * @property {string} output - The current output displayed on the calculator.
+ * @property {string} value - The current value being processed by the calculator.
  * @property {string|null} operand - The current operand selected by the user.
  * @property {string|null} operator - The current operator selected by the user.
  */
@@ -104,13 +106,19 @@ function handleClick(e) {
   } CalcEvent
  */
 
+// todo: replace status strings with constants
+// const STATUS_IDLE = 'idle';
+// const STATUS_WAITING = 'waiting';
+// const STATUS_CALCULATING = 'calculating';
+// const STATUS_RESULT = 'result';
+// const STATUS_ERROR = 'error';
+
 /**
  * Sends the current state and event to determine the next state of the calculator.
  * @param {CalcState} state - The current state of the calculator.
  * @param {CalcEvent} event - The event triggered by the user.
  * @returns {CalcState} The next state of the calculator after processing the event.
  */
-
 function send(state, event) {
   switch (state.status) {
     case 'idle':
@@ -121,7 +129,11 @@ function send(state, event) {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: event.value },
+          context: {
+            ...state.context,
+            value: event.value,
+            output: event.value,
+          },
         };
       }
       if (event.type === 'negate') {
@@ -131,6 +143,7 @@ function send(state, event) {
           context: {
             ...state.context,
             value: '-0',
+            output: '-0',
           },
         };
       }
@@ -149,7 +162,11 @@ function send(state, event) {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: state.context.value + '.' },
+          context: {
+            ...state.context,
+            value: state.context.value + '.',
+            output: state.context.value + ',',
+          },
         };
       }
       break;
@@ -162,6 +179,7 @@ function send(state, event) {
             context: {
               ...state.context,
               value: '0',
+              output: '0',
               operator: null,
               operand: null,
             },
@@ -170,7 +188,7 @@ function send(state, event) {
         return {
           ...state,
           status: 'calculating',
-          context: { ...state.context, value: '0' },
+          context: { ...state.context, value: '0', output: '0' },
         };
       }
       if (event.type === 'percentage') {
@@ -179,19 +197,26 @@ function send(state, event) {
           state.context.operator === '*' ||
           state.context.operator === '/'
         ) {
+          let percentage = calcPercentage(state.context.value, '1');
           return {
             ...state,
             context: {
               ...state.context,
-              value: calcPercentage(state.context.value, '1'),
+              value: percentage,
+              output: normalizeOutput(calculatorSmartDisplay(percentage)),
             },
           };
         }
+        let percentage = calcPercentage(
+          state.context.operand,
+          state.context.value
+        );
         return {
           ...state,
           context: {
             ...state.context,
-            value: calcPercentage(state.context.operand, state.context.value),
+            value: percentage,
+            output: normalizeOutput(calculatorSmartDisplay(percentage)),
           },
         };
       }
@@ -202,7 +227,11 @@ function send(state, event) {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: state.context.value + '.' },
+          context: {
+            ...state.context,
+            value: state.context.value + '.',
+            output: state.context.value + ',',
+          },
         };
       }
       if (event.type === 'result') {
@@ -214,13 +243,14 @@ function send(state, event) {
           state.context.value,
           state.context.operator
         );
-        if (value === 'Error') {
+        if (value === 'Error' || value === 'Infinity') {
           return {
             ...state,
             status: 'error',
             context: {
               ...state.context,
-              value: 'Error',
+              value,
+              output: value,
               operand: null,
               operator: null,
             },
@@ -229,7 +259,12 @@ function send(state, event) {
         return {
           ...state,
           status: 'result',
-          context: { ...state.context, value, operand: state.context.value },
+          context: {
+            ...state.context,
+            value,
+            output: normalizeOutput(calculatorSmartDisplay(value)),
+            operand: state.context.value,
+          },
         };
       }
       if (event.type === 'digit') {
@@ -237,7 +272,11 @@ function send(state, event) {
         if (state.context.value === '-0') {
           return {
             ...state,
-            context: { ...state.context, value: '-' + event.value },
+            context: {
+              ...state.context,
+              value: '-' + event.value,
+              output: '-' + event.value,
+            },
           };
         }
         let value;
@@ -251,7 +290,8 @@ function send(state, event) {
           status: 'waiting',
           context: {
             ...state.context,
-            value: truncateNumber(value),
+            value: value,
+            output: normalizeOutput(truncateNumber(value)),
           },
         };
       }
@@ -272,13 +312,14 @@ function send(state, event) {
           state.context.value,
           state.context.operator
         );
-        if (value === 'Error') {
+        if (value === 'Error' || value === 'Infinity') {
           return {
             ...state,
             status: 'idle',
             context: {
               ...state.context,
-              value: 'Error',
+              value,
+              output: value,
               operand: null,
               operator: null,
             },
@@ -290,6 +331,7 @@ function send(state, event) {
           context: {
             ...state.context,
             value,
+            output: normalizeOutput(calculatorSmartDisplay(value)),
             operator: event.value,
             operand: value,
           },
@@ -302,6 +344,7 @@ function send(state, event) {
           context: {
             ...state.context,
             value: negate(state.context.value),
+            output: normalizeOutput(negate(state.context.value)),
           },
         };
       }
@@ -315,12 +358,16 @@ function send(state, event) {
             context: {
               ...state.context,
               value: '0',
+              output: '0',
               operand: null,
               operator: null,
             },
           };
         }
-        return { ...state, context: { ...state.context, value: '0' } };
+        return {
+          ...state,
+          context: { ...state.context, value: '0', output: '0' },
+        };
       }
       if (event.type === 'negate') {
         return {
@@ -329,6 +376,7 @@ function send(state, event) {
           context: {
             ...state.context,
             value: '-0',
+            output: '-0',
           },
         };
       }
@@ -336,7 +384,11 @@ function send(state, event) {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: event.value },
+          context: {
+            ...state.context,
+            value: event.value,
+            output: event.value,
+          },
         };
       }
       if (event.type === 'operator') {
@@ -355,7 +407,13 @@ function send(state, event) {
           return {
             ...state,
             status: 'error',
-            context: { ...state.context, value, operand: null, operator: null },
+            context: {
+              ...state.context,
+              value,
+              output: value,
+              operand: null,
+              operator: null,
+            },
           };
         }
         return {
@@ -364,25 +422,33 @@ function send(state, event) {
           context: {
             ...state.context,
             value,
+            output: value,
             operand: state.context.value,
           },
         };
       }
       if (event.type === 'percentage') {
         if (state.context.operator === '/' || state.context.operator === '*') {
+          let percentage = calcPercentage(state.context.value, '1');
           return {
             ...state,
             context: {
               ...state.context,
-              value: calcPercentage(state.context.value, '1'),
+              value: percentage,
+              output: normalizeOutput(calculatorSmartDisplay(percentage)),
             },
           };
         }
+        let percentage = calcPercentage(
+          state.context.operand,
+          state.context.value
+        );
         return {
           ...state,
           context: {
             ...state.context,
-            value: calcPercentage(state.context.operand, state.context.value),
+            value: percentage,
+            output: normalizeOutput(calculatorSmartDisplay(percentage)),
           },
         };
       }
@@ -390,7 +456,7 @@ function send(state, event) {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: '0.' },
+          context: { ...state.context, value: '0.', output: '0,' },
         };
       }
       break;
@@ -399,7 +465,11 @@ function send(state, event) {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: event.value },
+          context: {
+            ...state.context,
+            value: event.value,
+            output: event.value,
+          },
         };
       }
       if (event.type === 'operator') {
@@ -414,15 +484,17 @@ function send(state, event) {
         };
       }
       if (event.type === 'result') {
+        const value = operate(
+          state.context.value,
+          state.context.operand,
+          state.context.operator
+        );
         return {
           ...state,
           context: {
             ...state.context,
-            value: operate(
-              state.context.value,
-              state.context.operand,
-              state.context.operator
-            ),
+            value,
+            output: normalizeOutput(calculatorSmartDisplay(value)),
           },
         };
       }
@@ -434,28 +506,36 @@ function send(state, event) {
             context: {
               ...state.context,
               value: '0',
+              output: '0',
               operator: null,
               operand: null,
             },
           };
         }
-        return { ...state, context: { ...state.context, value: '0' } };
+        return {
+          ...state,
+          context: { ...state.context, value: '0', output: '0' },
+        };
       }
       if (event.type === 'negate') {
+        const negated = negate(state.context.value);
         return {
           ...state,
           context: {
             ...state.context,
-            value: String(-parseFloat(state.context.value)),
+            value: negated,
+            output: normalizeOutput(negated),
           },
         };
       }
       if (event.type === 'percentage') {
+        let percentage = calcPercentage(state.context.value, '1');
         return {
           ...state,
           context: {
             ...state.context,
-            value: calcPercentage(state.context.value, '1'),
+            value: percentage,
+            output: normalizeOutput(calculatorSmartDisplay(percentage)),
           },
         };
       }
@@ -463,7 +543,7 @@ function send(state, event) {
         return {
           ...state,
           status: 'waiting',
-          context: { ...state.context, value: '0.' },
+          context: { ...state.context, value: '0.', output: '0,' },
         };
       }
       break;
@@ -472,7 +552,7 @@ function send(state, event) {
         return {
           ...state,
           status: 'idle',
-          context: { ...state.context, value: '0' },
+          context: { ...state.context, value: '0', output: '0' },
         };
       }
       break;

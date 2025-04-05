@@ -759,9 +759,41 @@ test.describe('Calculator', () => {
 
   test.describe('precision', () => {
     test('typing long number', async ({ page }) => {
+      await typeNumber(page, '12345678901234567890');
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('123456789012345');
+    });
+
+    test('typing long float number', async ({ page }) => {
       await typeNumber(page, '12,34567890123456789012345678901234567890');
       const output = page.getByTestId('output');
-      await expect(output).toHaveText('12,3456789');
+      await expect(output).toHaveText('12,3456789012345');
+    });
+
+    test('typing another long float number', async ({ page }) => {
+      await typeNumber(page, '1234,567890123456789012345678901234567890');
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('1234,56789012345');
+    });
+  });
+
+  test.describe('division by zero', () => {
+    test.beforeEach(async ({ page }) => {
+      await typeNumber(page, '1234');
+      await page.getByTestId('/').click();
+      await typeNumber(page, '0');
+      await page.getByTestId('=').click();
+    });
+
+    test('displays Error', async ({ page }) => {
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('Infinity');
+    });
+
+    test('pressing clear clears display', async ({ page }) => {
+      await page.getByTestId('C').click();
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('0');
     });
   });
 });

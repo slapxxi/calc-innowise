@@ -1,4 +1,5 @@
 // @ts-check
+const MAX_OUTPUT_LENGTH = 15;
 
 export function operate(a, b, operator) {
   const aNum = parseFloat(a);
@@ -28,6 +29,10 @@ export function operate(a, b, operator) {
 
   if (isNaN(result)) {
     return 'Error';
+  }
+
+  if (!isFinite(result)) {
+    return 'Infinity';
   }
 
   return String(result);
@@ -73,25 +78,28 @@ export function changeClearButtonText(text) {
 }
 
 /**
- * Truncates a number to 8 decimal places.
+ * Truncates a number to max decimal places.
  * @param {string} value - The number to truncate.
+ * @param {number} max - The maximum number of decimal places.
  * @returns {string} The truncated number.
  */
-export function truncateNumber(value) {
+export function truncateNumber(value, max = MAX_OUTPUT_LENGTH) {
+  if (isFloat(value)) {
+    return value.slice(0, max + 1);
+  }
+  return value.slice(0, max);
+}
+
+function isFloat(value) {
   let isFloat = false;
-  let startingIndex = 0;
   for (let i = 0; i < value.length; i++) {
     const char = value[i];
     if (char === '.') {
       isFloat = true;
-      startingIndex = i;
       break;
     }
   }
-  if (isFloat) {
-    return value.slice(0, startingIndex + 9);
-  }
-  return value.slice(0, 11);
+  return isFloat;
 }
 
 /**
@@ -109,16 +117,17 @@ export function removeTrailingZeroes(str) {
  * @returns {boolean} True if the number is in exponential notation, false otherwise.
  */
 export function isExponential(num) {
-  return num.toString().toLowerCase().includes('e');
+  return String(num).toLowerCase().includes('e');
 }
 
 export function normalizeOutput(value) {
-  // special cases
-  if (value === 'Error' || value === '-0' || value.endsWith('.')) {
-    return value.replace('.', ',');
-  }
-  let num = parseFloat(value).toFixed(8);
-  return removeTrailingZeroes(String(num)).replace('.', ',');
+  return value.replace('.', ',');
+}
+
+// export function calculatorSmartDisplay(value, significantDigits = 12) {
+export function calculatorSmartDisplay(value, significantDigits = 8) {
+  const num = parseFloat(value);
+  return parseFloat(num.toPrecision(significantDigits)).toString();
 }
 
 /**
@@ -128,9 +137,9 @@ export function normalizeOutput(value) {
  * @returns {string} The calculated percentage as a string.
  */
 export function calcPercentage(operand, percentage) {
-  const op = parseFloat(operand);
-  const p = parseFloat(percentage);
-  const result = (op / 100) * p;
+  const numOperand = parseFloat(operand);
+  const numPercentage = parseFloat(percentage);
+  const result = (numOperand / 100) * numPercentage;
   return String(result);
 }
 
