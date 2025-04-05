@@ -673,6 +673,46 @@ test.describe('Calculator', () => {
   });
 
   test.describe('percentage', () => {
+    test.describe('when multiplying', () => {
+      test.beforeEach(async ({ page }) => {
+        await typeNumber(page, '120');
+        await page.getByTestId('*').click();
+        await typeNumber(page, '20');
+        await page.getByTestId('%').click();
+      });
+
+      test('displays percentage', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await expect(output).toHaveText('0,2');
+      });
+
+      test('pressing result produces correct result', async ({ page }) => {
+        await page.getByTestId('=').click();
+        const output = page.getByTestId('output');
+        await expect(output).toHaveText('24');
+      });
+    });
+
+    test.describe('when dividing', () => {
+      test.beforeEach(async ({ page }) => {
+        await typeNumber(page, '120');
+        await page.getByTestId('/').click();
+        await typeNumber(page, '20');
+        await page.getByTestId('%').click();
+      });
+
+      test('displays percentage', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await expect(output).toHaveText('0,2');
+      });
+
+      test('pressing result produces correct result', async ({ page }) => {
+        await page.getByTestId('=').click();
+        const output = page.getByTestId('output');
+        await expect(output).toHaveText('600');
+      });
+    });
+
     test('produces percentage of a single number', async ({ page }) => {
       await page.getByTestId('button-1').click();
       await page.getByTestId('button-2').click();
@@ -684,12 +724,13 @@ test.describe('Calculator', () => {
 
     test('produces percentage of a previous number', async ({ page }) => {
       await typeNumber(page, '600');
-      await page.getByTestId('*').click();
-      await page.getByTestId('button-1').click();
-      await page.getByTestId('button-5').click();
+      await page.getByTestId('+').click();
+      await typeNumber(page, '15');
       await page.getByTestId('%').click();
       const output = page.getByTestId('output');
       await expect(output).toHaveText('90');
+      await page.getByTestId('=').click();
+      await expect(output).toHaveText('690');
     });
 
     test('produces percentage of an operation with no second number', async ({
@@ -740,6 +781,11 @@ async function typeNumber(page, value) {
   }
 }
 
+/**
+ * Maps a character to the corresponding button test ID.
+ * @param {string} c - The character to map.
+ * @returns {string} - The mapped button test ID.
+ */
 function mapButtons(c) {
   switch (c) {
     case ',':

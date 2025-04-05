@@ -91,7 +91,7 @@ export function truncateNumber(value) {
   if (isFloat) {
     return value.slice(0, startingIndex + 9);
   }
-  return value;
+  return value.slice(0, 11);
 }
 
 /**

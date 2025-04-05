@@ -174,7 +174,11 @@ function send(state, event) {
         };
       }
       if (event.type === 'percentage') {
-        if (state.context.operand === null) {
+        if (
+          state.context.operand === null ||
+          state.context.operator === '*' ||
+          state.context.operator === '/'
+        ) {
           return {
             ...state,
             context: {
@@ -365,6 +369,15 @@ function send(state, event) {
         };
       }
       if (event.type === 'percentage') {
+        if (state.context.operator === '/' || state.context.operator === '*') {
+          return {
+            ...state,
+            context: {
+              ...state.context,
+              value: calcPercentage(state.context.value, '1'),
+            },
+          };
+        }
         return {
           ...state,
           context: {
