@@ -1,26 +1,26 @@
 // @ts-check
 
 export function operate(a, b, operator) {
-  a = parseFloat(a);
-  b = parseFloat(b);
+  const aNum = parseFloat(a);
+  const bNum = parseFloat(b);
 
   let result;
 
   switch (operator) {
     case '+':
-      result = a + b;
+      result = aNum + bNum;
       break;
     case '-':
-      result = a - b;
+      result = aNum - bNum;
       break;
     case '*':
-      result = a * b;
+      result = aNum * bNum;
       break;
     case '/':
-      if (b === 0) {
+      if (bNum === 0) {
         result = NaN;
       }
-      result = a / b;
+      result = aNum / bNum;
       break;
     default:
       throw new Error(`Unknown operator: ${operator}`);
@@ -30,7 +30,7 @@ export function operate(a, b, operator) {
     return 'Error';
   }
 
-  return removeTrailingZeroes(String(result.toFixed(8)));
+  return String(result);
 }
 
 export function highlightActiveOperator(operator) {
@@ -113,7 +113,12 @@ export function isExponential(num) {
 }
 
 export function normalizeOutput(value) {
-  return value.replace('.', ',');
+  // special cases
+  if (value === 'Error' || value === '-0' || value.endsWith('.')) {
+    return value.replace('.', ',');
+  }
+  let num = parseFloat(value).toFixed(8);
+  return removeTrailingZeroes(String(num)).replace('.', ',');
 }
 
 /**
@@ -126,7 +131,7 @@ export function calcPercentage(operand, percentage) {
   const op = parseFloat(operand);
   const p = parseFloat(percentage);
   const result = (op / 100) * p;
-  return removeTrailingZeroes(String(result.toFixed(8)));
+  return String(result);
 }
 
 /**

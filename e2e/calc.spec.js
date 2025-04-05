@@ -715,6 +715,14 @@ test.describe('Calculator', () => {
       await expect(output).toHaveText('36,38');
     });
   });
+
+  test.describe('precision', () => {
+    test('typing long number', async ({ page }) => {
+      await typeNumber(page, '12,34567890123456789012345678901234567890');
+      const output = page.getByTestId('output');
+      await expect(output).toHaveText('12,3456789');
+    });
+  });
 });
 
 /**
