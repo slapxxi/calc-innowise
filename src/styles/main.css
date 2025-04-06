@@ -52,10 +52,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-}
-
-.inner-container {
-  position: relative;
+  filter: url('#borderFilter');
 }
 
 .calc {
@@ -100,7 +97,7 @@ body {
   font-weight: 500;
   font-size: var(--text-md);
   color: var(--fg);
-  filter: url('#emphasize');
+  filter: url('#borderFilter');
 }
 
 .button:hover {

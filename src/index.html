@@ -8,8 +8,23 @@
   <body>
     <!-- reusable definitions -->
     <svg width="0" height="0" class="absolute pointer-none">
-      <!-- <filter id="borderFilter"></filter> -->
-      <!-- <filter id="emphasize"></filter> -->
+      <filter id="borderFilter">
+        <feFlood flood-color="#123" />
+        <feComposite in="SourceAlpha" operator="in" result="INSIDE" />
+        <feMorphology operator="erode" radius="1" result="ERODE" />
+        <feComposite in="INSIDE" operator="out" result="BORDER" />
+        <feComposite in="SourceGraphic" operator="in" />
+        <feComponentTransfer result="RESULT">
+          <feFuncR type="linear" slope="1.8" />
+          <feFuncG type="linear" slope="1.8" />
+          <feFuncB type="linear" slope="1.8" />
+        </feComponentTransfer>
+        <feMerge>
+          <feMergeNode in="SourceGraphic" />
+          <feMergeNode in="RESULT" />
+        </feMerge>
+      </filter>
+
       <svg viewBox="0 0 24 24" id="icon-theme-toggle">
         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
           <g fill="currentColor" fill-rule="nonzero">
