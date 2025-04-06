@@ -1,6 +1,14 @@
 // @ts-check
 const MAX_OUTPUT_LENGTH = 15;
 
+/**
+ * Performs a basic arithmetic operation on two numbers.
+ * @param {string} a - The first number as a string.
+ * @param {string} b - The second number as a string.
+ * @param {string} operator - The operator to use ('+', '-', '*', '/').
+ * @returns {string} The result of the operation as a string.
+ * @throws {Error} If the operator is unknown.
+ */
 export function operate(a, b, operator) {
   const aNum = parseFloat(a);
   const bNum = parseFloat(b);
@@ -90,6 +98,11 @@ export function truncateNumber(value, max = MAX_OUTPUT_LENGTH) {
   return value.slice(0, max);
 }
 
+/**
+ * Checks if a string represents a float.
+ * @param {string} value - The string to check.
+ * @returns {boolean} True if the string represents a float, false otherwise.
+ */
 function isFloat(value) {
   let isFloat = false;
   for (let i = 0; i < value.length; i++) {
@@ -120,11 +133,21 @@ export function isExponential(num) {
   return String(num).toLowerCase().includes('e');
 }
 
+/**
+ * Formats output
+ * @param {string} value - The number to format.
+ * @returns {string} The formatted number.
+ */
 export function normalizeOutput(value) {
   return value.replace('.', ',');
 }
 
-// export function calculatorSmartDisplay(value, significantDigits = 12) {
+/**
+ * Ateempts to convert a number to a string with a specified number of significant digits.
+ * @param {string} value - The number to convert.
+ * @param {number} significantDigits - The number of significant digits.
+ * @returns {string} The converted number as a string.
+ */
 export function calculatorSmartDisplay(value, significantDigits = 12) {
   const num = parseFloat(value);
   return parseFloat(num.toPrecision(significantDigits)).toString();
