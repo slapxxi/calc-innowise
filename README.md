@@ -12,12 +12,13 @@ To install the necessary dependencies for the project, run the following command
 npm install
 ```
 
-| Command         | Description                   |
-| --------------- | ----------------------------- |
-| `npm run start` | Starts the development server |
-| `npm run build` | Creates a production build    |
-| `npm test`      | Runs the test suite           |
-| `npm run lint`  | Performs code linting         |
+| Command                    | Description                   |
+| -------------------------- | ----------------------------- |
+| `npm run start`            | Starts the development server |
+| `npm run build`            | Creates a production build    |
+| `npm test`                 | Runs the test suite           |
+| `npm run lint`             | Performs code linting         |
+| `npx playwright text --ui` | Launch the testing UI         |
 
 ## Technologies Used
 
