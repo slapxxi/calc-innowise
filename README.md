@@ -31,11 +31,40 @@ npm install
 - HTML5
 - LocalStorage for theme persistence
 
-## Description
+## Testing
+
+The project includes an extensive end-to-end test suite located in the `e2e/` directory. The main test file `calc.spec.js` contains comprehensive tests covering all calculator functionality:
+
+### Test Coverage
+
+- Basic number input and display
+- All arithmetic operations (+, -, \*, /)
+- Operator chaining
+- Error states (e.g., division by zero)
+- Clear/All Clear functionality
+- Decimal point handling
+- Number negation
+- State management
+- Button highlighting
+- Display formatting
+
+### Running Tests
+
+To run the test suite:
+
+```bash
+# Run tests in headless mode
+npm test
+
+# Run tests with UI
+npx playwright test --ui
+```
+
+The test suite uses Playwright for end-to-end testing, providing thorough coverage of user interactions and calculator functionality. Each test case ensures the calculator behaves correctly in various scenarios, from basic arithmetic to edge cases and error handling.
+
+## Project Description
 
 A modern calculator web application built with vanilla JavaScript, featuring multiple themes and a responsive design.
-
-This calculator application is designed to provide a clean, intuitive interface while offering powerful functionality. It combines the simplicity of basic arithmetic operations with advanced features and modern design principles.
 
 ### Key Features
 
