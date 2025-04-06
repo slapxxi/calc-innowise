@@ -6,6 +6,8 @@
 
 ## How to Run the App
 
+Either visit the [deployed version](https://calc-innowise.vercel.app/) or do the following:
+
 To install the necessary dependencies for the project, run the following command:
 
 ```
