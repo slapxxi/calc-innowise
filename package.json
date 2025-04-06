@@ -9,6 +9,7 @@
     "build": "webpack --mode production",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
+    "test": "playwright test",
     "prepare": "husky"
   },
   "devDependencies": {
