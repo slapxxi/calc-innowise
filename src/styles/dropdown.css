@@ -44,11 +44,12 @@ html:has(.dropdown__listItem[data-value='Solarized']:hover) {
   display: flex;
   align-items: center;
   padding: 10px;
-  background: #fff;
-  border: 1px solid var(--border-color);
+  background-color: var(--color-calc);
+  border: 1px solid var(--color-special);
   border-radius: 4px;
   cursor: pointer;
   gap: 4px;
+  color: var(--color-text);
 }
 
 .dropdown__list {

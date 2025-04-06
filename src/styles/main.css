@@ -39,8 +39,9 @@ body {
   display: flex;
   justify-content: end;
   width: 100%;
-  padding: 2rem 0;
-  background-color: var(--background-color);
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  background-color: var(--color-calc);
 }
 
 .icon {
@@ -205,9 +206,14 @@ body {
 }
 
 @media screen and (min-width: 768px) {
+  :root {
+    --border-radius: 10px;
+  }
+
   .header {
-    padding: 1rem 0;
+    padding: 1rem;
     max-width: var(--max-w);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
   }
 
   .container {
@@ -216,6 +222,7 @@ body {
     align-items: center;
     justify-content: center;
     background-color: var(--background-color);
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
   }
 
   .calc {
@@ -224,10 +231,6 @@ body {
     min-height: 54rem;
     flex: 0 0 auto;
     overflow: hidden;
-    border-radius: 10px;
-    box-shadow:
-      0 4px 20px rgba(0, 0, 0, 0.3),
-      0 0 25px rgba(0, 0, 0, 0.2);
-    /* filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8)); */
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
   }
 }
