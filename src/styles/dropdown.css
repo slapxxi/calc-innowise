@@ -1,4 +1,4 @@
-html:has(.dropdown__listItem[data-value='default']:hover) {
+html:has(.dropdown__listItem[data-value='Default']:hover) {
   --color-operator: var(--theme-default-color-operator);
   --color-text: var(--theme-default-color-text);
   --color-calc: var(--theme-default-color-calc);
@@ -7,7 +7,7 @@ html:has(.dropdown__listItem[data-value='default']:hover) {
   --color-normal: var(--theme-default-color-normal);
 }
 
-html:has(.dropdown__listItem[data-value='dracula']:hover) {
+html:has(.dropdown__listItem[data-value='Dracula']:hover) {
   --color-operator: var(--theme-dracula-color-operator);
   --color-text: var(--theme-dracula-color-text);
   --color-calc: var(--theme-dracula-color-calc);
@@ -16,7 +16,7 @@ html:has(.dropdown__listItem[data-value='dracula']:hover) {
   --color-normal: var(--theme-dracula-color-normal);
 }
 
-html:has(.dropdown__listItem[data-value='pcalc']:hover) {
+html:has(.dropdown__listItem[data-value='PCalc']:hover) {
   --color-operator: var(--theme-pcalc-color-operator);
   --color-text: var(--theme-pcalc-color-text);
   --color-calc: var(--theme-pcalc-color-calc);
@@ -25,7 +25,7 @@ html:has(.dropdown__listItem[data-value='pcalc']:hover) {
   --color-normal: var(--theme-pcalc-color-normal);
 }
 
-html:has(.dropdown__listItem[data-value='solarized']:hover) {
+html:has(.dropdown__listItem[data-value='Solarized']:hover) {
   --color-operator: var(--theme-solarized-color-operator);
   --color-text: var(--theme-solarized-color-text);
   --color-calc: var(--theme-solarized-color-calc);

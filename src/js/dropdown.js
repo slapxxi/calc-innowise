@@ -8,7 +8,7 @@ const themeList = [
 const savedTheme = localStorage.getItem('selectedTheme');
 
 if (savedTheme) {
-  console.log(savedTheme);
+  document.documentElement.classList.remove(...themeList);
   document.documentElement.classList.add(themeToClassName(savedTheme));
   document.querySelector('.dropdown__btn__text').textContent = savedTheme;
 }

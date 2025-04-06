@@ -11,11 +11,11 @@
       <filter id="borderFilter"></filter>
       <filter id="emphasize"></filter>
       <svg
+        id="icon-theme-toggle"
         xmlns="http://www.w3.org/2000/svg"
         width="24"
         height="24"
         viewBox="0 -960 960 960"
-        id="icon-theme-toggle"
       >
         <path
           fill="currentColor"
@@ -57,7 +57,9 @@
       <header class="header">
         <div class="relative z-10 dropdown">
           <button class="dropdown__btn">
-            <svg width="24" height="24"><use href="#icon-theme-toggle" /></svg>
+            <svg width="24" height="24">
+              <use href="#icon-theme-toggle" />
+            </svg>
             <span class="dropdown__btn__text">Select Theme </span>
           </button>
           <ul class="dropdown__list hidden">
@@ -88,12 +90,10 @@
           </ul>
         </div>
       </header>
-
       <form action="none" class="calc">
         <output name="result" class="output relative" data-testId="output">
           0
         </output>
-
         <button
           type="button"
           class="button button_1"
@@ -184,7 +184,6 @@
         >
           0
         </button>
-
         <button
           type="button"
           class="button button_com"
@@ -193,7 +192,6 @@
         >
           ,
         </button>
-
         <button
           type="button"
           class="button button_special button_s1"
@@ -202,7 +200,6 @@
         >
           AC
         </button>
-
         <button
           type="button"
           class="button button_special button_s2"
@@ -211,7 +208,6 @@
         >
           ±
         </button>
-
         <button
           type="button"
           class="button button_special button_s3"
@@ -220,7 +216,6 @@
         >
           %
         </button>
-
         <button
           type="button"
           class="button button_operator button_op1"
@@ -230,7 +225,6 @@
         >
           ÷
         </button>
-
         <button
           type="button"
           class="button button_operator button_op2"
@@ -240,7 +234,6 @@
         >
           ×
         </button>
-
         <button
           type="button"
           class="button button_operator button_op3"
@@ -250,7 +243,6 @@
         >
           -
         </button>
-
         <button
           type="button"
           class="button button_operator button_op4"
@@ -260,7 +252,6 @@
         >
           +
         </button>
-
         <button
           type="button"
           class="button button_operator button_op5"

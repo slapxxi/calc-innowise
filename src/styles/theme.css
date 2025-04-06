@@ -1,0 +1,61 @@
+:root {
+  /* Dracula Theme Colors */
+  --theme-dracula-color-calc: #282a36;
+  --theme-dracula-color-normal: #44475a;
+  --theme-dracula-color-special: #6272a4;
+  --theme-dracula-color-text: #ede3f9;
+  --theme-dracula-color-operator: #ff79c6;
+
+  /* Default Theme Colors */
+  --theme-default-color-normal: #7d7d7d;
+  --theme-default-color-calc: #535353;
+  --theme-default-color-operator: #ff9f0a;
+  --theme-default-color-special: #646464;
+  --theme-default-color-text: #ededed;
+
+  /* PCalc Theme Colors */
+  --theme-pcalc-color-normal: #b0b4c0;
+  --theme-pcalc-color-calc: #0a1d3e;
+  --theme-pcalc-color-special: #6b7280;
+  --theme-pcalc-color-operator: #007aff;
+  --theme-pcalc-color-text: #fff;
+
+  /* Solarized Theme Colors */
+  --theme-solarized-color-normal: #073642;
+  --theme-solarized-color-calc: #002b36;
+  --theme-solarized-color-operator: #b58900;
+  --theme-solarized-color-special: #268bd2;
+  --theme-solarized-color-text: #eee8d5;
+}
+
+.default-theme {
+  --color-normal: var(--theme-default-color-normal);
+  --color-calc: var(--theme-default-color-calc);
+  --color-operator: var(--theme-default-color-operator);
+  --color-special: var(--theme-default-color-special);
+  --color-text: var(--theme-default-color-text);
+}
+
+.dracula-theme {
+  --color-calc: var(--theme-dracula-color-calc);
+  --color-normal: var(--theme-dracula-color-normal);
+  --color-special: var(--theme-dracula-color-special);
+  --color-text: var(--theme-dracula-color-text);
+  --color-operator: var(--theme-dracula-color-operator);
+}
+
+.pcalc-theme {
+  --color-normal: var(--theme-pcalc-color-normal);
+  --color-calc: var(--theme-pcalc-color-calc);
+  --color-operator: var(--theme-pcalc-color-operator);
+  --color-special: var(--theme-pcalc-color-special);
+  --color-text: var(--theme-pcalc-color-text);
+}
+
+.solarized-theme {
+  --color-normal: var(--theme-solarized-color-normal);
+  --color-calc: var(--theme-solarized-color-calc);
+  --color-operator: var(--theme-solarized-color-operator);
+  --color-special: var(--theme-solarized-color-special);
+  --color-text: var(--theme-solarized-color-text);
+}
