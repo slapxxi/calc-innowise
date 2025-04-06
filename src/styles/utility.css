@@ -5,3 +5,15 @@
 .hidden {
   display: none;
 }
+
+.absolute {
+  position: absolute;
+}
+
+.pointer-none {
+  pointer-events: none;
+}
+
+.z-10 {
+  z-index: 10;
+}

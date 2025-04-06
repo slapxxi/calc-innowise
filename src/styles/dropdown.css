@@ -1,6 +1,54 @@
+html:has(.dropdown__listItem[data-value='default']:hover) {
+  --color-operator: var(--theme-default-color-operator);
+  --color-text: var(--theme-default-color-text);
+  --color-calc: var(--theme-default-color-calc);
+  --color-text: var(--theme-default-color-text);
+  --color-special: var(--theme-default-color-special);
+  --color-normal: var(--theme-default-color-normal);
+}
+
+html:has(.dropdown__listItem[data-value='dracula']:hover) {
+  --color-operator: var(--theme-dracula-color-operator);
+  --color-text: var(--theme-dracula-color-text);
+  --color-calc: var(--theme-dracula-color-calc);
+  --color-text: var(--theme-dracula-color-text);
+  --color-special: var(--theme-dracula-color-special);
+  --color-normal: var(--theme-dracula-color-normal);
+}
+
+html:has(.dropdown__listItem[data-value='pcalc']:hover) {
+  --color-operator: var(--theme-pcalc-color-operator);
+  --color-text: var(--theme-pcalc-color-text);
+  --color-calc: var(--theme-pcalc-color-calc);
+  --color-text: var(--theme-pcalc-color-text);
+  --color-special: var(--theme-pcalc-color-special);
+  --color-normal: var(--theme-pcalc-color-normal);
+}
+
+html:has(.dropdown__listItem[data-value='solarized']:hover) {
+  --color-operator: var(--theme-solarized-color-operator);
+  --color-text: var(--theme-solarized-color-text);
+  --color-calc: var(--theme-solarized-color-calc);
+  --color-text: var(--theme-solarized-color-text);
+  --color-special: var(--theme-solarized-color-special);
+  --color-normal: var(--theme-solarized-color-normal);
+}
+
 .dropdown {
+  --border-color: #ddd;
   position: relative;
   display: inline-block;
+}
+
+.dropdown__btn {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  gap: 4px;
 }
 
 .dropdown__list {
@@ -11,12 +59,14 @@
   top: 100%;
   right: 0;
   background: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  transform: translateY(4px);
 }
 
 .dropdown__listItem {
   display: flex;
-  padding: 5px;
+  padding: 8px;
   cursor: pointer;
   align-items: center;
   gap: 5px;

@@ -125,7 +125,7 @@ export function normalizeOutput(value) {
 }
 
 // export function calculatorSmartDisplay(value, significantDigits = 12) {
-export function calculatorSmartDisplay(value, significantDigits = 8) {
+export function calculatorSmartDisplay(value, significantDigits = 12) {
   const num = parseFloat(value);
   return parseFloat(num.toPrecision(significantDigits)).toString();
 }

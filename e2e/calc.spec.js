@@ -330,7 +330,7 @@ test.describe('Calculator', () => {
       await page.getByTestId('button-6').click();
       await page.getByTestId('=').click();
       const output = page.getByTestId('output');
-      await expect(output).toHaveText('0,26973684');
+      await expect(output).toHaveText('0,269736842105');
     });
 
     test('multiplies with other number', async ({ page }) => {

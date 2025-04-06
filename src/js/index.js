@@ -43,9 +43,9 @@ function handleClick(e) {
       let calcEvent = { type, value };
       // @ts-ignore
       const nextState = send(calculatorState, calcEvent);
-      console.table(nextState);
 
       const output = document.querySelector('.output');
+
       if (output) {
         output.textContent = nextState.context.output;
       }
