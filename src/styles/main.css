@@ -53,6 +53,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   filter: url('#borderFilter');
+  touch-action: manipulation;
 }
 
 .calc {
@@ -97,7 +98,6 @@ body {
   font-weight: 500;
   font-size: var(--text-md);
   color: var(--fg);
-  filter: url('#borderFilter');
 }
 
 .button:hover {
@@ -229,5 +229,9 @@ body {
     flex: 0 0 auto;
     overflow: hidden;
     border-radius: 0 0 var(--border-radius) var(--border-radius);
+  }
+
+  .button {
+    filter: url('#borderFilter');
   }
 }
