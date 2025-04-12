@@ -16,12 +16,23 @@ import {
 /** @type {CalcState} */
 let calculatorState = {
   status: 'idle',
-  context: { output: '0', value: '0', operator: null, operand: null },
+  context: {
+    output: '0',
+    value: '0',
+    operator: null,
+    operand: null,
+  },
 };
 
 try {
   /** @type {HTMLFormElement | null} */
   const containerElement = document.querySelector('.calc');
+  const output = document.querySelector('.output__text');
+
+  if (output) {
+    output.textContent = calculatorState.context.output;
+  }
+
   if (containerElement) {
     containerElement.addEventListener('click', handleClick);
   } else {
@@ -44,10 +55,24 @@ function handleClick(e) {
       // @ts-ignore
       const nextState = send(calculatorState, calcEvent);
 
-      const output = document.querySelector('.output');
+      const outputContainer = document.querySelector('.output');
+      const output = document.querySelector('.output__text');
 
       if (output) {
         output.textContent = nextState.context.output;
+      }
+
+      if (outputContainer) {
+        if (nextState.context.output.length <= 15) {
+          outputContainer.setAttribute('viewBox', '0 0 100 30');
+        } else {
+          const calculatedWidth = nextState.context.output.length * 6.25;
+          const aspectRatio = 30 / 100;
+          outputContainer.setAttribute(
+            'viewBox',
+            `0 0 ${calculatedWidth} ${calculatedWidth * aspectRatio}`
+          );
+        }
       }
 
       if (

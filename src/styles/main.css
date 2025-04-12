@@ -75,17 +75,14 @@ body {
 }
 
 .output {
-  display: flex;
-  text-align: right;
-  justify-content: end;
-  align-items: flex-end;
   grid-area: out;
-  padding: 0.5rem 1rem;
+  overflow: visible;
+  padding: 1rem;
   color: var(--text-color);
-  font-size: var(--text-lg);
-  font-size: 5.4rem;
-  word-break: break-word;
-  overflow-wrap: break-word;
+}
+
+.output__text {
+  /* transform: translateY(-10px); */
 }
 
 .button {
