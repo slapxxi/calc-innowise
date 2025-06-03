@@ -1,7 +1,7 @@
-@import '@/styles/normalize.css';
-@import '@/styles/dropdown.css';
-@import '@/styles/theme.css';
-@import '@/styles/utility.css';
+@import './normalize.css';
+@import './dropdown.css';
+@import './theme.css';
+@import './utility.css';
 
 :root {
   --max-w: 475px;

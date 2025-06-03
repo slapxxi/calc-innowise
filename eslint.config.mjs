@@ -1,17 +1,8 @@
-import { defineConfig } from 'eslint/config';
-import globals from 'globals';
-import js from '@eslint/js';
-import prettier from 'eslint-config-prettier';
+// @ts-check
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
-export default defineConfig([
-  { files: ['**/*.{js,mjs,cjs}'] },
-  {
-    files: ['**/*.{js,mjs,cjs}'],
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
-  },
-  {
-    files: ['**/*.{js,mjs,cjs}'],
-    plugins: { js, prettier },
-    extends: ['js/recommended'],
-  },
-]);
+export default tseslint.config(
+  eslint.configs.recommended,
+  tseslint.configs.recommended
+);

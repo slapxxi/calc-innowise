@@ -1,19 +1,15 @@
-// @ts-check
+import type { OperatorValue } from '@/lib/types';
+
 const MAX_OUTPUT_LENGTH = 15;
 
 /**
- * Performs a basic arithmetic operation on two numbers.
- * @param {string} a - The first number as a string.
- * @param {string} b - The second number as a string.
- * @param {string} operator - The operator to use ('+', '-', '*', '/').
- * @returns {string} The result of the operation as a string.
- * @throws {Error} If the operator is unknown.
+ * Performs a basic arithmetic operation on two numbers
  */
-export function operate(a, b, operator) {
+export function operate(a: string, b: string, operator: string): string {
   const aNum = parseFloat(a);
   const bNum = parseFloat(b);
 
-  let result;
+  let result: number;
 
   switch (operator) {
     case '+':
@@ -46,7 +42,7 @@ export function operate(a, b, operator) {
   return String(result);
 }
 
-export function highlightActiveOperator(operator) {
+export function highlightActiveOperator(operator: OperatorValue) {
   let el;
   switch (operator) {
     case '*':
@@ -78,7 +74,7 @@ export function removeActiveOperator() {
  * Changes the text of the clear button based on the current state.
  * @param {string} text - The text to set for the clear button.
  */
-export function changeClearButtonText(text) {
+export function changeClearButtonText(text: string) {
   const clearButton = document.querySelector('[data-type="clear"]');
   if (clearButton) {
     clearButton.textContent = text;
@@ -87,11 +83,8 @@ export function changeClearButtonText(text) {
 
 /**
  * Truncates a number to max decimal places.
- * @param {string} value - The number to truncate.
- * @param {number} max - The maximum number of decimal places.
- * @returns {string} The truncated number.
  */
-export function truncateNumber(value, max = MAX_OUTPUT_LENGTH) {
+export function truncateNumber(value: string, max = MAX_OUTPUT_LENGTH) {
   if (isFloat(value)) {
     return value.slice(0, max + 1);
   }
@@ -99,11 +92,9 @@ export function truncateNumber(value, max = MAX_OUTPUT_LENGTH) {
 }
 
 /**
- * Checks if a string represents a float.
- * @param {string} value - The string to check.
- * @returns {boolean} True if the string represents a float, false otherwise.
+ * Checks if a string represents a float
  */
-function isFloat(value) {
+function isFloat(value: string) {
   let isFloat = false;
   for (let i = 0; i < value.length; i++) {
     const char = value[i];
@@ -116,50 +107,41 @@ function isFloat(value) {
 }
 
 /**
- * Removes trailing zeroes from a string representation of a number.
- * @param {string} str - The string to process.
- * @returns {string} The processed string without trailing zeroes.
+ * Removes trailing zeroes from a string representation of a number
  */
-export function removeTrailingZeroes(str) {
+export function removeTrailingZeroes(str: string) {
   return str.replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0+$/, '');
 }
 
 /**
  * Checks if a number is in exponential notation.
- * @param {string} num - The number to check.
- * @returns {boolean} True if the number is in exponential notation, false otherwise.
  */
-export function isExponential(num) {
+export function isExponential(num: number) {
   return String(num).toLowerCase().includes('e');
 }
 
 /**
- * Formats output
- * @param {string} value - The number to format.
- * @returns {string} The formatted number.
+ * Normalizes the output by replacing decimal points with commas.
  */
-export function normalizeOutput(value) {
+export function normalizeOutput(value: string) {
   return value.replace('.', ',');
 }
 
 /**
- * Ateempts to convert a number to a string with a specified number of significant digits.
- * @param {string} value - The number to convert.
- * @param {number} significantDigits - The number of significant digits.
- * @returns {string} The converted number as a string.
+ * Attempts to convert a number to a string with a specified number of significant digits.
  */
-export function calculatorSmartDisplay(value, significantDigits = 12) {
+export function calculatorSmartDisplay(
+  value: string,
+  significantDigits: number = 12
+) {
   const num = parseFloat(value);
   return parseFloat(num.toPrecision(significantDigits)).toString();
 }
 
 /**
  * Calculates the percentage of a value based on an operand.
- * @param {string} operand - The operand (percentage).
- * @param {string} percentage - The value to calculate the percentage of.
- * @returns {string} The calculated percentage as a string.
  */
-export function calcPercentage(operand, percentage) {
+export function calcPercentage(operand: string, percentage: string) {
   const numOperand = parseFloat(operand);
   const numPercentage = parseFloat(percentage);
   const result = (numOperand / 100) * numPercentage;
@@ -168,9 +150,7 @@ export function calcPercentage(operand, percentage) {
 
 /**
  * Negates a number represented as a string.
- * @param {string} value - The number to negate.
- * @returns {string} The negated number as a string.
  */
-export function negate(value) {
+export function negate(value: string) {
   return String(-parseFloat(value));
 }

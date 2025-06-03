@@ -7,6 +7,25 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
     />
     <title>Calculator for Innowise</title>
+    <script>
+      const themeList = [
+        'default-theme',
+        'dracula-theme',
+        'solarized-theme',
+        'pcalc-theme',
+      ];
+      const savedTheme = localStorage.getItem('selectedTheme');
+
+      if (savedTheme) {
+        document.documentElement.classList.remove(...themeList);
+        document.documentElement.classList.add(themeToClassName(savedTheme));
+        document.querySelector('.dropdown__btn__text').textContent = savedTheme;
+      }
+
+      function themeToClassName(theme) {
+        return theme.toLowerCase() + '-theme';
+      }
+    </script>
   </head>
   <body>
     <!-- reusable definitions -->

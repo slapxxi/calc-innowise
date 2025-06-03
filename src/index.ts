@@ -1,6 +1,6 @@
-// @ts-check
-import '@/styles/main.css';
-import '@/js/dropdown.js';
+/* eslint-disable */
+import './styles/main.css';
+import './lib/dropdown';
 import {
   changeClearButtonText,
   removeActiveOperator,
@@ -11,7 +11,11 @@ import {
   normalizeOutput,
   truncateNumber,
   calculatorSmartDisplay,
-} from '@/js/utils.js';
+} from './lib/utils';
+import { Calculator } from './lib/calculator';
+
+const calc = new Calculator();
+calc._log();
 
 /**
  * @typedef {'idle' | 'waiting' | 'calculating' | 'result' | 'error' } Status
@@ -54,7 +58,6 @@ import {
 // const STATUS_RESULT = 'result';
 // const STATUS_ERROR = 'error';
 
-/** @type {CalcState} */
 let calculatorState = {
   status: 'idle',
   context: {
@@ -66,7 +69,6 @@ let calculatorState = {
 };
 
 try {
-  /** @type {HTMLFormElement | null} */
   const containerElement = document.querySelector('.calc');
   const output = document.querySelector('.output__text');
 
@@ -85,14 +87,13 @@ try {
 
 /**
  * Handles click events on the calculator buttons.
- * @param {MouseEvent} e - The click event triggered by the user.
  */
-function handleClick(e) {
+function handleClick(e: Event) {
   if (e.target instanceof HTMLElement && e.target.dataset) {
     const { type, value } = e.target.dataset;
 
     if (type) {
-      let calcEvent = { type, value };
+      const calcEvent = { type, value };
       // @ts-ignore
       const nextState = send(calculatorState, calcEvent);
 
@@ -144,7 +145,7 @@ function handleClick(e) {
  * @param {CalcEvent} event - The event triggered by the user.
  * @returns {CalcState} The next state of the calculator after processing the event.
  */
-function send(state, event) {
+function send(state: any, event: any) {
   switch (state.status) {
     case 'idle':
       if (event.type === 'digit') {

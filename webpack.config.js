@@ -6,7 +6,7 @@ const HTMLInlineCSSWebpackPlugin =
 
 module.exports = {
   mode: 'production',
-  entry: './src/js/index.js',
+  entry: './src/index.ts',
   resolve: {
     alias: {
       '@*': path.resolve(__dirname, 'src/*'),
@@ -20,6 +20,16 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true, // <== disables type checking
+          },
+        },
+        exclude: /node_modules/,
+      },
+      {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader, // Extracts CSS into a file or memory
@@ -27,6 +37,9 @@ module.exports = {
         ],
       },
     ],
+  },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js'],
   },
   plugins: [
     new MiniCssExtractPlugin({

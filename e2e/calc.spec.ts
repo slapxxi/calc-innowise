@@ -1,5 +1,5 @@
-// @ts-check
 import { test, expect } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 
 test.describe('Calculator', () => {
   test.beforeEach(async ({ page }) => {
@@ -124,7 +124,7 @@ test.describe('Calculator', () => {
 
     test.describe('pressing operators', () => {
       test.describe('pressing /', () => {
-        let button;
+        let button: Locator;
 
         test.beforeEach(async ({ page }) => {
           button = page.getByTestId('/');
@@ -154,7 +154,7 @@ test.describe('Calculator', () => {
       });
 
       test.describe('pressing *', () => {
-        let button;
+        let button: Locator;
 
         test.beforeEach(async ({ page }) => {
           button = page.getByTestId('*');
@@ -184,7 +184,7 @@ test.describe('Calculator', () => {
       });
 
       test.describe('pressing -', () => {
-        let button;
+        let button: Locator;
 
         test.beforeEach(async ({ page }) => {
           button = page.getByTestId('-');
@@ -214,7 +214,7 @@ test.describe('Calculator', () => {
       });
 
       test.describe('pressing +', () => {
-        let button;
+        let button: Locator;
 
         test.beforeEach(async ({ page }) => {
           button = page.getByTestId('+');
@@ -800,10 +800,8 @@ test.describe('Calculator', () => {
 
 /**
  * Types a number into the calculator.
- * @param {import('@playwright/test').Page} page - The Playwright page object.
- * @param {string} value - The number to type.
  */
-async function typeNumber(page, value) {
+async function typeNumber(page: Page, value: string) {
   const c = value
     .split('')
     .map(mapButtons)
@@ -815,10 +813,8 @@ async function typeNumber(page, value) {
 
 /**
  * Maps a character to the corresponding button test ID.
- * @param {string} c - The character to map.
- * @returns {string} - The mapped button test ID.
  */
-function mapButtons(c) {
+function mapButtons(c: string) {
   switch (c) {
     case ',':
       return ',';
