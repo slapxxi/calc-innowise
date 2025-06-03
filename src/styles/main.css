@@ -81,10 +81,6 @@ body {
   color: var(--text-color);
 }
 
-.output__text {
-  /* transform: translateY(-10px); */
-}
-
 .button {
   --bg: var(--button-bg);
   --fg: var(--button-fg);

@@ -13,6 +13,47 @@ import {
   calculatorSmartDisplay,
 } from '@/js/utils.js';
 
+/**
+ * @typedef {'idle' | 'waiting' | 'calculating' | 'result' | 'error' } Status
+ * The status of the calculator.
+ * - 'idle': The calculator is waiting for user input.
+ * - 'waiting': The calculator is waiting for a digit or operator input.
+ * - 'calculating': The calculator is performing a calculation.
+ * - 'result': The calculator has produced a result.
+ */
+
+/** @typedef {Object} Context
+ * @property {string} output - The current output displayed on the calculator.
+ * @property {string} value - The current value being processed by the calculator.
+ * @property {string|null} operand - The current operand selected by the user.
+ * @property {string|null} operator - The current operator selected by the user.
+ */
+
+/**
+ * @typedef {Object} CalcState
+ * @property {Status} status - The current status of the calculator.
+ * @property {Context} context - The current context of the calculator.
+ */
+
+/**
+ * @typedef {
+  {type: 'operator', value: '-' | '+' | '*' | '/'} | 
+  {type: 'digit', value: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'} | 
+  {type: 'negate'} | 
+  {type: 'comma'} | 
+  {type: 'clear'} | 
+  {type: 'percentage'} |
+  {type: 'result'}
+  } CalcEvent
+ */
+
+// todo: replace status strings with constants
+// const STATUS_IDLE = 'idle';
+// const STATUS_WAITING = 'waiting';
+// const STATUS_CALCULATING = 'calculating';
+// const STATUS_RESULT = 'result';
+// const STATUS_ERROR = 'error';
+
 /** @type {CalcState} */
 let calculatorState = {
   status: 'idle',
@@ -96,47 +137,6 @@ function handleClick(e) {
     }
   }
 }
-
-/**
- * @typedef {'idle' | 'waiting' | 'calculating' | 'result' | 'error' } Status
- * The status of the calculator.
- * - 'idle': The calculator is waiting for user input.
- * - 'waiting': The calculator is waiting for a digit or operator input.
- * - 'calculating': The calculator is performing a calculation.
- * - 'result': The calculator has produced a result.
- */
-
-/** @typedef {Object} Context
- * @property {string} output - The current output displayed on the calculator.
- * @property {string} value - The current value being processed by the calculator.
- * @property {string|null} operand - The current operand selected by the user.
- * @property {string|null} operator - The current operator selected by the user.
- */
-
-/**
- * @typedef {Object} CalcState
- * @property {Status} status - The current status of the calculator.
- * @property {Context} context - The current context of the calculator.
- */
-
-/**
- * @typedef {
-  {type: 'operator', value: '-' | '+' | '*' | '/'} | 
-  {type: 'digit', value: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9'} | 
-  {type: 'negate'} | 
-  {type: 'comma'} | 
-  {type: 'clear'} | 
-  {type: 'percentage'} |
-  {type: 'result'}
-  } CalcEvent
- */
-
-// todo: replace status strings with constants
-// const STATUS_IDLE = 'idle';
-// const STATUS_WAITING = 'waiting';
-// const STATUS_CALCULATING = 'calculating';
-// const STATUS_RESULT = 'result';
-// const STATUS_ERROR = 'error';
 
 /**
  * Sends the current state and event to determine the next state of the calculator.
