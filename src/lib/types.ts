@@ -43,4 +43,5 @@ export type CalcState = {
   operator: OperatorValue | null;
   value: number;
   formattedValue: string;
+  memory: number | null;
 };

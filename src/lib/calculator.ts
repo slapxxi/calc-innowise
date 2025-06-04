@@ -8,9 +8,11 @@ export class Calculator {
     formattedValue: '0',
     operand: null,
     operator: null,
+    memory: null,
   };
 
   send(event: CalculatorEvent) {
+    console.log('Event received:', event);
     switch (this.state.status) {
       case CalculatorStatus.Idle:
         this.handleIdle(event);
@@ -32,11 +34,30 @@ export class Calculator {
     }
   }
 
+  get formattedValue() {
+    return this.state.formattedValue;
+  }
+
+  get operator() {
+    return this.state.operator;
+  }
+
+  /**
+   * Checks if the calculator is in a specific status
+   */
+  is(status: CalculatorStatus) {
+    return this.state.status === status;
+  }
+
   private handleIdle(event: CalculatorEvent) {}
   private handleWaitingForOperator(event: CalculatorEvent) {}
   private handleResult(event: CalculatorEvent) {}
   private handleError(event: CalculatorEvent) {}
   private handleCalculating(event: CalculatorEvent) {}
+
+  private static normalizeValue(value: string) {
+    return value.replace('.', ',');
+  }
 
   // for debugging purposes
   _log() {

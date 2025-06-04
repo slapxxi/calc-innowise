@@ -154,3 +154,16 @@ export function calcPercentage(operand: string, percentage: string) {
 export function negate(value: string) {
   return String(-parseFloat(value));
 }
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function removeEmptyProperties<T extends Record<string, any>>(
+  obj: T
+): T {
+  const newObj: T = {} as T;
+  Object.keys(obj).forEach((key: keyof T) => {
+    if (obj[key] === Object(obj[key]))
+      newObj[key] = removeEmptyProperties(obj[key]);
+    else if (obj[key] !== undefined) newObj[key] = obj[key];
+  });
+  return newObj;
+}

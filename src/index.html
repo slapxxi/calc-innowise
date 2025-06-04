@@ -19,7 +19,6 @@
       if (savedTheme) {
         document.documentElement.classList.remove(...themeList);
         document.documentElement.classList.add(themeToClassName(savedTheme));
-        document.querySelector('.dropdown__btn__text').textContent = savedTheme;
       }
 
       function themeToClassName(theme) {
