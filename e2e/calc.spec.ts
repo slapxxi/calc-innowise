@@ -135,11 +135,6 @@ test.describe('Calculator', () => {
           await expect(button).toHaveClass(/button_active/);
         });
 
-        test('does not change clear button to C', async ({ page }) => {
-          const clear = page.getByTestId('C');
-          await expect(clear).toHaveText('AC');
-        });
-
         test('results in Error', async ({ page }) => {
           await page.getByTestId('=').click();
           const output = page.getByTestId('output');
@@ -165,9 +160,9 @@ test.describe('Calculator', () => {
           await expect(button).toHaveClass(/button_active/);
         });
 
-        test('does not change clear button to C', async ({ page }) => {
+        test('does change clear button to C', async ({ page }) => {
           const clear = page.getByTestId('C');
-          await expect(clear).toHaveText('AC');
+          await expect(clear).toHaveText('C');
         });
 
         test('results in 0', async ({ page }) => {
@@ -195,9 +190,9 @@ test.describe('Calculator', () => {
           await expect(button).toHaveClass(/button_active/);
         });
 
-        test('does not change clear button to C', async ({ page }) => {
+        test('does change clear button to C', async ({ page }) => {
           const clear = page.getByTestId('C');
-          await expect(clear).toHaveText('AC');
+          await expect(clear).toHaveText('C');
         });
 
         test('results in 0', async ({ page }) => {
@@ -225,9 +220,9 @@ test.describe('Calculator', () => {
           await expect(button).toHaveClass(/button_active/);
         });
 
-        test('does not change clear button to C', async ({ page }) => {
+        test('does change clear button to C', async ({ page }) => {
           const clear = page.getByTestId('C');
-          await expect(clear).toHaveText('AC');
+          await expect(clear).toHaveText('C');
         });
 
         test('results in 0', async ({ page }) => {
@@ -279,11 +274,6 @@ test.describe('Calculator', () => {
       test('adds comma', async ({ page }) => {
         const output = page.getByTestId('output');
         await expect(output).toHaveText('0,');
-      });
-
-      test('changes clear button to C', async ({ page }) => {
-        const clear = page.getByTestId('C');
-        await expect(clear).toHaveText('C');
       });
 
       test('pressing again does nothing', async ({ page }) => {
@@ -467,9 +457,9 @@ test.describe('Calculator', () => {
         await expect(output).toHaveText('0');
       });
 
-      test('changes clear button to AC', async ({ page }) => {
+      test('changes clear button to C', async ({ page }) => {
         const clear = page.getByTestId('C');
-        await expect(clear).toHaveText('AC');
+        await expect(clear).toHaveText('C');
       });
 
       test('operator stays highlighted', async ({ page }) => {
@@ -573,20 +563,16 @@ test.describe('Calculator', () => {
       await clear.click();
       const output = page.getByTestId('output');
       await expect(output).toHaveText('0');
-      await expect(clear).toHaveText('AC');
+      await expect(clear).toHaveText('C');
       await expect(page.getByTestId('+')).toHaveClass(/button_active/);
     });
   });
 
   test.describe('when result is produced', () => {
     test.beforeEach(async ({ page }) => {
-      await page.getByTestId('button-1').click();
-      await page.getByTestId('button-2').click();
-      await page.getByTestId('button-3').click();
+      await typeNumber(page, '123');
       await page.getByTestId('+').click();
-      await page.getByTestId('button-4').click();
-      await page.getByTestId('button-5').click();
-      await page.getByTestId('button-6').click();
+      await typeNumber(page, '456');
       await page.getByTestId('=').click();
     });
 

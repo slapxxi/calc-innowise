@@ -1,10 +1,11 @@
-type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0;
+type Digit = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0';
 
 type DigitEvent = { type: 'digit'; value: Digit };
 type PercentageEvent = { type: 'percentage' };
 type CommaOp = { type: 'comma' };
 type ClearEvent = { type: 'clear' };
 type NegateEvent = { type: 'negate' };
+type ResultEvent = { type: 'result' };
 
 type DivOp = { type: 'operator'; value: '/' };
 type MultOp = { type: 'operator'; value: '*' };
@@ -19,10 +20,11 @@ export type OperatorValue = OperatorEvent['value'];
  */
 export type CalculatorEvent =
   | DigitEvent
-  | PercentageEvent
   | CommaOp
   | ClearEvent
   | NegateEvent
+  | ResultEvent
+  | PercentageEvent
   | OperatorEvent;
 
 /**
@@ -32,16 +34,17 @@ export type CalculatorEvent =
 export enum CalculatorStatus {
   Idle = 'idle',
   Calculating = 'calculating',
-  WaitingForOperator = 'waiting',
+  Waiting = 'waiting',
   Result = 'result',
   Error = 'error',
 }
 
 export type CalcState = {
   status: CalculatorStatus;
-  operand: number | null;
+  operand: string | null;
   operator: OperatorValue | null;
-  value: number;
+  value: string;
   formattedValue: string;
-  memory: number | null;
+  memory: string | null;
+  allClear: boolean;
 };

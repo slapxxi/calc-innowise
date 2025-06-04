@@ -9,6 +9,12 @@ export const OUTPUT_CONTAINER_SELECTOR = '.output';
 export const OUTPUT_SELECTOR = '.output__text';
 export const CLEAR_BUTTON_SELECTOR = '[data-type="clear"]';
 
+export const BUTTON_ACTIVE_SELECTOR = '.button_active';
+export const BUTTON_OP_ADD_SELECTOR = '[data-value="+"]';
+export const BUTTON_OP_SUB_SELECTOR = '[data-value="-"]';
+export const BUTTON_OP_MUL_SELECTOR = '[data-value="*"]';
+export const BUTTON_OP_DIV_SELECTOR = '[data-value="/"]';
+
 export class App {
   containerElement: HTMLDivElement;
   outputContainerElement: HTMLDivElement;
@@ -55,8 +61,9 @@ export class App {
     this.adjustOutputContainer();
     this.highlightActiveOperator();
 
-    // todo: fix this
-    if (this.calculator.formattedValue === '0') {
+    // todo: fix this since it's quite fragile
+    // incorrect behavior if the value is just 0 but the state is not idle etc
+    if (this.calculator.isAllClear) {
       this.changeClearButtonText('AC');
     } else {
       this.changeClearButtonText('C');
@@ -72,8 +79,29 @@ export class App {
   }
 
   private highlightActiveOperator() {
+    document
+      .querySelector(BUTTON_ACTIVE_SELECTOR)
+      ?.classList.remove('button_active');
+
     if (this.calculator.is(CalculatorStatus.Calculating)) {
-      // todo: implement
+      let el;
+      switch (this.calculator.operator) {
+        case '*':
+          el = document.querySelector(BUTTON_OP_MUL_SELECTOR);
+          break;
+        case '-':
+          el = document.querySelector(BUTTON_OP_SUB_SELECTOR);
+          break;
+        case '+':
+          el = document.querySelector(BUTTON_OP_ADD_SELECTOR);
+          break;
+        case '/':
+          el = document.querySelector(BUTTON_OP_DIV_SELECTOR);
+          break;
+        default:
+          return;
+      }
+      el?.classList.add('button_active');
     }
   }
 
