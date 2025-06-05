@@ -458,9 +458,9 @@ test.describe('Calculator', () => {
         await expect(output).toHaveText('0');
       });
 
-      test('changes clear button to C', async ({ page }) => {
+      test('changes clear button to AC', async ({ page }) => {
         const clear = page.getByTestId('C');
-        await expect(clear).toHaveText('C');
+        await expect(clear).toHaveText('AC');
       });
 
       test('operator stays highlighted', async ({ page }) => {
@@ -564,7 +564,7 @@ test.describe('Calculator', () => {
       await clear.click();
       const output = page.getByTestId('output');
       await expect(output).toHaveText('0');
-      await expect(clear).toHaveText('C');
+      await expect(clear).toHaveText('AC');
       await expect(page.getByTestId('+')).toHaveClass(/button_active/);
     });
   });
@@ -781,6 +781,139 @@ test.describe('Calculator', () => {
       await page.getByTestId('C').click();
       const output = page.getByTestId('output');
       await expect(output).toHaveText('0');
+    });
+  });
+
+  test.describe('power', () => {
+    test.describe('power of 2', () => {
+      test('produces correct result', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '4');
+        await page.getByTestId('n**2').click();
+        await expect(output).toHaveText('16');
+        await page.getByTestId('n**2').click();
+        await expect(output).toHaveText('256');
+      });
+
+      test('does not repeat', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '3');
+        await page.getByTestId('n**2').click();
+        await expect(output).toHaveText('9');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('9');
+      });
+    });
+
+    test.describe('power of 3', () => {
+      test('produces correct result', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '4');
+        await page.getByTestId('n**3').click();
+        await expect(output).toHaveText('64');
+        await page.getByTestId('n**3').click();
+        await expect(output).toHaveText('262144');
+      });
+
+      test('does not repeat', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '3');
+        await page.getByTestId('n**3').click();
+        await expect(output).toHaveText('27');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('27');
+      });
+    });
+
+    test.describe('power of n', () => {
+      test('produces correct result', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '16');
+        await page.getByTestId('**').click();
+        await typeNumber(page, '4');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('65536');
+      });
+
+      test('repeats', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '2');
+        await page.getByTestId('**').click();
+        await typeNumber(page, '4');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('16');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('65536');
+      });
+    });
+  });
+
+  test.describe('clearing', () => {
+    test.describe('when nothing entered', () => {
+      test('does nothing', async ({ page }) => {
+        const output = page.getByTestId('output');
+        const clear = page.getByTestId('C');
+        await clear.click();
+        await expect(output).toHaveText('0');
+        await expect(clear).toHaveText('AC');
+      });
+    });
+
+    test.describe('when single value entered', () => {
+      test('resets value', async ({ page }) => {
+        const output = page.getByTestId('output');
+        const clear = page.getByTestId('C');
+        await clear.click();
+        await expect(output).toHaveText('0');
+        await expect(clear).toHaveText('AC');
+      });
+    });
+
+    test.describe('when operator selected', () => {
+      test('resets output', async ({ page }) => {
+        const output = page.getByTestId('output');
+        const clear = page.getByTestId('C');
+        await typeNumber(page, '123');
+        await page.getByTestId('+').click();
+        await clear.click();
+        await expect(output).toHaveText('0');
+        await expect(clear).toHaveText('AC');
+        await expect(page.getByTestId('+')).toHaveClass(/button_active/);
+      });
+    });
+
+    test.describe('when second operand selected', () => {
+      test('resets output', async ({ page }) => {
+        const output = page.getByTestId('output');
+        const clear = page.getByTestId('C');
+        await typeNumber(page, '123');
+        await page.getByTestId('+').click();
+        await typeNumber(page, '456');
+        await clear.click();
+        await expect(output).toHaveText('0');
+        await expect(clear).toHaveText('AC');
+        await expect(page.getByTestId('+')).toHaveClass(/button_active/);
+      });
+    });
+  });
+
+  test.describe('root', () => {
+    test.describe('root of n', () => {
+      test('produces correct result', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '64');
+        await page.getByTestId('root').click();
+        await expect(output).toHaveText('2');
+      });
+
+      test('repeats', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '27');
+        await page.getByTestId('root').click();
+        await expect(output).toHaveText('3');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('3');
+      });
     });
   });
 });

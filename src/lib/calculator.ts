@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { CalcState, CalculatorEvent, CalculatorStatus } from './types';
+import { factorial, nthRoot } from './utils';
 
 const MAX_OUTPUT_LENGTH = 15;
 
@@ -15,6 +16,7 @@ export class Calculator {
   };
 
   send(event: CalculatorEvent) {
+    console.log('Calculator event:', event);
     switch (this.state.status) {
       case CalculatorStatus.Idle:
         this.handleIdle(event);
@@ -34,6 +36,7 @@ export class Calculator {
       default:
         console.error('Unknown state:', this.state.status);
     }
+    this.log();
   }
 
   get formattedValue() {
@@ -53,6 +56,10 @@ export class Calculator {
 
   get isAllClear() {
     return this.state.allClear;
+  }
+
+  get value() {
+    return this.state.value;
   }
 
   set value(val: string) {
@@ -114,6 +121,7 @@ export class Calculator {
         }
         this.state.status = CalculatorStatus.Calculating;
         this.value = '0';
+        this.state.allClear = true;
         break;
       case 'percentage':
         if (
@@ -194,6 +202,17 @@ export class Calculator {
       case 'negate':
         this.value = Calculator.negate(this.state.value);
         break;
+      case 'assign':
+        if (event.value === 'Error' || event.value === 'Infinity') {
+          this.state.status = CalculatorStatus.Error;
+          this.value = event.value;
+          break;
+        }
+        this.state.value = event.value;
+        this.state.formattedValue = Calculator.normalizeValue(
+          Calculator.smartDisplay(event.value)
+        );
+        break;
     }
   }
 
@@ -222,6 +241,7 @@ export class Calculator {
           break;
         }
         this.value = '0';
+        this.state.allClear = true;
         break;
       case 'result':
         result = Calculator.operate(
@@ -264,6 +284,18 @@ export class Calculator {
       case 'comma':
         this.state.status = CalculatorStatus.Waiting;
         this.value = '0.';
+        break;
+      case 'assign':
+        if (event.value === 'Error' || event.value === 'Infinity') {
+          this.state.status = CalculatorStatus.Error;
+          this.value = event.value;
+          break;
+        }
+        this.state.status = CalculatorStatus.Waiting;
+        this.state.value = event.value;
+        this.state.formattedValue = Calculator.normalizeValue(
+          Calculator.smartDisplay(event.value)
+        );
         break;
     }
   }
@@ -318,6 +350,17 @@ export class Calculator {
         this.state.status = CalculatorStatus.Waiting;
         this.value = '0.';
         break;
+      case 'assign':
+        if (event.value === 'Error' || event.value === 'Infinity') {
+          this.state.status = CalculatorStatus.Error;
+          this.value = event.value;
+          break;
+        }
+        this.state.value = event.value;
+        this.state.formattedValue = Calculator.normalizeValue(
+          Calculator.smartDisplay(event.value)
+        );
+        break;
     }
   }
 
@@ -352,7 +395,7 @@ export class Calculator {
   /**
    * Performs basic arithmetic operation on two numbers represented as strings
    */
-  private static operate(
+  static operate(
     a: string,
     b: string,
     operator: string
@@ -377,6 +420,23 @@ export class Calculator {
           result = NaN;
         }
         result = aNum / bNum;
+        break;
+      case '**':
+        result = aNum ** bNum;
+        break;
+      case 'root':
+        try {
+          result = nthRoot(aNum, bNum);
+        } catch {
+          result = NaN;
+        }
+        break;
+      case '!':
+        try {
+          result = factorial(aNum);
+        } catch {
+          result = NaN;
+        }
         break;
       default:
         throw new Error(`Unknown operator: ${operator}`);

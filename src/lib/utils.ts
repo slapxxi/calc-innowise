@@ -167,3 +167,33 @@ export function removeEmptyProperties<T extends Record<string, any>>(
   });
   return newObj;
 }
+
+export function nthRoot(value: number, n: number, precision = 1e-10) {
+  if (n <= 0) throw new Error('Root must be a positive integer');
+  if (value < 0 && n % 2 === 0)
+    throw new Error('Even root of negative number is not real');
+
+  let x = value / n;
+  let prev;
+
+  do {
+    prev = x;
+    const numerator = (n - 1) * x + value / x ** (n - 1);
+    x = numerator / n;
+  } while (abs(x - prev) > precision);
+
+  return x;
+}
+
+export function factorial(n: number) {
+  if (n < 0) throw new Error('Factorial is not defined for negative numbers');
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
+}
+
+function abs(x: number) {
+  return x < 0 ? -x : x;
+}

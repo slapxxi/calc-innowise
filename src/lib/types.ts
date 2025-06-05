@@ -1,8 +1,12 @@
+export interface Command {
+  execute(): void;
+}
+
 type Digit = '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0';
 
 type DigitEvent = { type: 'digit'; value: Digit };
 type PercentageEvent = { type: 'percentage' };
-type CommaOp = { type: 'comma' };
+type CommaEvent = { type: 'comma' };
 type ClearEvent = { type: 'clear' };
 type NegateEvent = { type: 'negate' };
 type ResultEvent = { type: 'result' };
@@ -11,8 +15,21 @@ type DivOp = { type: 'operator'; value: '/' };
 type MultOp = { type: 'operator'; value: '*' };
 type AddOp = { type: 'operator'; value: '+' };
 type SubOp = { type: 'operator'; value: '-' };
+type PowerOp = { type: 'operator'; value: '**' };
+type RootOp = { type: 'operator'; value: 'root' };
 
-type OperatorEvent = DivOp | MultOp | AddOp | SubOp;
+export type Shortcut =
+  | 'n**2'
+  | 'n**3'
+  | '10**n'
+  | 'root2'
+  | 'root3'
+  | '1/n'
+  | 'n!';
+
+// assigns value to the output and changes state accordingly
+export type AssignEvent = { type: 'assign'; value: string };
+export type OperatorEvent = DivOp | MultOp | AddOp | SubOp | PowerOp | RootOp;
 export type OperatorValue = OperatorEvent['value'];
 
 /**
@@ -20,11 +37,12 @@ export type OperatorValue = OperatorEvent['value'];
  */
 export type CalculatorEvent =
   | DigitEvent
-  | CommaOp
+  | CommaEvent
   | ClearEvent
   | NegateEvent
   | ResultEvent
   | PercentageEvent
+  | AssignEvent
   | OperatorEvent;
 
 /**

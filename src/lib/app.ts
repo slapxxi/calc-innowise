@@ -1,7 +1,16 @@
 import { Calculator } from './calculator';
+import {
+  Power2Command,
+  Power3Command,
+  Root2Command,
+  Root3Command,
+  OneDivCommand,
+  TenToPowerCommand,
+  FactorialCommand,
+} from './calculator/commands';
 import { Dropdown } from './dropdown';
 import { InitializationError } from './errors';
-import { CalculatorStatus, type CalculatorEvent } from './types';
+import { CalculatorStatus, Shortcut, type CalculatorEvent } from './types';
 import { removeEmptyProperties } from './utils';
 
 export const CONTAINER_SELECTOR = '.calc';
@@ -14,12 +23,21 @@ export const BUTTON_OP_ADD_SELECTOR = '[data-value="+"]';
 export const BUTTON_OP_SUB_SELECTOR = '[data-value="-"]';
 export const BUTTON_OP_MUL_SELECTOR = '[data-value="*"]';
 export const BUTTON_OP_DIV_SELECTOR = '[data-value="/"]';
+export const BUTTON_OP_POW_SELECTOR = '[data-value="**"]';
 
 export class App {
   containerElement: HTMLDivElement;
   outputContainerElement: HTMLDivElement;
   outputElement: HTMLDivElement;
   clearButtonElement: HTMLButtonElement;
+
+  power2Command: Power2Command;
+  power3Command: Power3Command;
+  root2Command: Root2Command;
+  root3Command: Root3Command;
+  tenToPowerCommand: TenToPowerCommand;
+  oneDivCommand: OneDivCommand;
+  factorialCommand: FactorialCommand;
 
   calculator: Calculator;
 
@@ -48,6 +66,14 @@ export class App {
 
       this.calculator = new Calculator();
 
+      this.power2Command = new Power2Command(this.calculator);
+      this.power3Command = new Power3Command(this.calculator);
+      this.root2Command = new Root2Command(this.calculator);
+      this.root3Command = new Root3Command(this.calculator);
+      this.tenToPowerCommand = new TenToPowerCommand(this.calculator);
+      this.oneDivCommand = new OneDivCommand(this.calculator);
+      this.factorialCommand = new FactorialCommand(this.calculator);
+
       this.addEventHandlers();
       this.render();
       new Dropdown();
@@ -61,8 +87,6 @@ export class App {
     this.adjustOutputContainer();
     this.highlightActiveOperator();
 
-    // todo: fix this since it's quite fragile
-    // incorrect behavior if the value is just 0 but the state is not idle etc
     if (this.calculator.isAllClear) {
       this.changeClearButtonText('AC');
     } else {
@@ -98,6 +122,9 @@ export class App {
         case '/':
           el = document.querySelector(BUTTON_OP_DIV_SELECTOR);
           break;
+        case '**':
+          el = document.querySelector(BUTTON_OP_POW_SELECTOR);
+          break;
         default:
           return;
       }
@@ -128,6 +155,13 @@ export class App {
     if (target?.dataset) {
       const { type, value } = target.dataset;
 
+      if (type === 'shortcut') {
+        const command = this.mapShortcutToCommand(value as Shortcut);
+        command.execute();
+        this.render();
+        return;
+      }
+
       if (type) {
         const calcEvent = removeEmptyProperties({
           type,
@@ -138,4 +172,25 @@ export class App {
       }
     }
   };
+
+  private mapShortcutToCommand(value: Shortcut) {
+    switch (value) {
+      case 'n**2':
+        return this.power2Command;
+      case 'n**3':
+        return this.power3Command;
+      case '10**n':
+        return this.tenToPowerCommand;
+      case 'root2':
+        return this.root2Command;
+      case 'root3':
+        return this.root3Command;
+      case '1/n':
+        return this.oneDivCommand;
+      case 'n!':
+        return this.factorialCommand;
+      default:
+        throw new Error(`Unknown shortcut: ${value}`);
+    }
+  }
 }
