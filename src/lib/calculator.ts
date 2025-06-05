@@ -234,6 +234,7 @@ export class Calculator {
           this.value = event.value;
           break;
         }
+        this.state.status = CalculatorStatus.Result;
         this.state.value = event.value;
         this.state.formattedValue = normalizeOutput(
           calculatorSmartDisplay(event.value)
@@ -328,7 +329,7 @@ export class Calculator {
           this.value = event.value;
           break;
         }
-        this.state.status = CalculatorStatus.Waiting;
+        this.state.status = CalculatorStatus.Result;
         this.state.value = event.value;
         this.state.formattedValue = normalizeOutput(
           calculatorSmartDisplay(event.value)
