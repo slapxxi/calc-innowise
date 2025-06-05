@@ -144,7 +144,7 @@ export class Calculator {
             : truncateNumber(this.state.value + event.value);
         break;
       case 'clear':
-        if (this.state.value === '0' || this.state.operand === null) {
+        if (this.state.operand === null) {
           this.state.status = CalculatorStatus.Idle;
           this.value = '0';
           this.state.operator = null;
@@ -307,8 +307,8 @@ export class Calculator {
           break;
         }
         this.state.status = CalculatorStatus.Result;
-        this.state.value = result;
         this.state.operand = this.state.value;
+        this.state.value = result;
         this.state.formattedValue = normalizeOutput(
           calculatorSmartDisplay(result)
         );
@@ -453,11 +453,6 @@ export class Calculator {
         this.state.status = CalculatorStatus.Waiting;
         this.value = '0';
         this.send(event);
-        break;
-      case 'clear':
-        this.state.status = CalculatorStatus.Waiting;
-        this.value = '0';
-        this.state.allClear = false;
         break;
       default:
         this.state.status = CalculatorStatus.Waiting;
