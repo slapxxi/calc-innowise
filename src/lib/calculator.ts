@@ -146,6 +146,7 @@ export class Calculator {
           this.state.operator = null;
           this.state.operand = null;
           this.state.allClear = true;
+          this.memory.clear();
           break;
         }
         this.state.status = CalculatorStatus.Calculating;
@@ -279,6 +280,7 @@ export class Calculator {
           this.state.operand = null;
           this.state.operator = null;
           this.state.allClear = true;
+          this.memory.clear();
           break;
         }
         this.value = '0';
@@ -381,8 +383,10 @@ export class Calculator {
           this.state.operand = null;
           this.state.operator = null;
           this.state.allClear = true;
+          this.memory.clear();
           break;
         }
+        this.state.status = CalculatorStatus.Waiting;
         this.value = '0';
         this.state.allClear = true;
         break;
