@@ -898,22 +898,118 @@ test.describe('Calculator', () => {
   });
 
   test.describe('root', () => {
+    test.describe('root of 2', () => {
+      test('produces correct result', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '16');
+        await page.getByTestId('root2').click();
+        await expect(output).toHaveText('4');
+      });
+
+      test('does not repeat', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '9');
+        await page.getByTestId('root2').click();
+        await expect(output).toHaveText('3');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('3');
+      });
+    });
+
+    test.describe('root of 3', () => {
+      test('produces correct result', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '27');
+        await page.getByTestId('root3').click();
+        await expect(output).toHaveText('3');
+      });
+
+      test('does not repeat', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '8');
+        await page.getByTestId('root3').click();
+        await expect(output).toHaveText('2');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('2');
+      });
+    });
+
     test.describe('root of n', () => {
       test('produces correct result', async ({ page }) => {
         const output = page.getByTestId('output');
-        await typeNumber(page, '64');
+        await typeNumber(page, '16');
         await page.getByTestId('root').click();
+        await typeNumber(page, '4');
+        await page.getByTestId('=').click();
         await expect(output).toHaveText('2');
       });
 
       test('repeats', async ({ page }) => {
         const output = page.getByTestId('output');
-        await typeNumber(page, '27');
+        await typeNumber(page, '16');
         await page.getByTestId('root').click();
-        await expect(output).toHaveText('3');
+        await typeNumber(page, '4');
         await page.getByTestId('=').click();
-        await expect(output).toHaveText('3');
+        await expect(output).toHaveText('2');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('1,189207115');
       });
+    });
+  });
+
+  test.describe('10 power n', () => {
+    test.describe('10 power 2', () => {
+      test('produces correct result', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '2');
+        await page.getByTestId('10**n').click();
+        await expect(output).toHaveText('100');
+      });
+
+      test('does not repeat', async ({ page }) => {
+        const output = page.getByTestId('output');
+        await typeNumber(page, '3');
+        await page.getByTestId('10**n').click();
+        await expect(output).toHaveText('1000');
+        await page.getByTestId('=').click();
+        await expect(output).toHaveText('1000');
+      });
+    });
+  });
+
+  test.describe('1 divided by n', () => {
+    test('produces correct result', async ({ page }) => {
+      const output = page.getByTestId('output');
+      await typeNumber(page, '2');
+      await page.getByTestId('1/n').click();
+      await expect(output).toHaveText('0,5');
+    });
+
+    test('does not repeat', async ({ page }) => {
+      const output = page.getByTestId('output');
+      await typeNumber(page, '4');
+      await page.getByTestId('1/n').click();
+      await expect(output).toHaveText('0,25');
+      await page.getByTestId('=').click();
+      await expect(output).toHaveText('0,25');
+    });
+  });
+
+  test.describe('factorial', () => {
+    test('produces correct result', async ({ page }) => {
+      const output = page.getByTestId('output');
+      await typeNumber(page, '5');
+      await page.getByTestId('n!').click();
+      await expect(output).toHaveText('120');
+    });
+
+    test('does not repeat', async ({ page }) => {
+      const output = page.getByTestId('output');
+      await typeNumber(page, '4');
+      await page.getByTestId('n!').click();
+      await expect(output).toHaveText('24');
+      await page.getByTestId('=').click();
+      await expect(output).toHaveText('24');
     });
   });
 });

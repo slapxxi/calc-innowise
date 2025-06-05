@@ -61,17 +61,17 @@ body {
   flex: 1;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(6, minmax(90px, 1fr));
+  grid-template-columns: repeat(7, minmax(90px, 1fr));
   grid-template-rows: minmax(140px, auto) repeat(3, 1fr);
   grid-auto-rows: 1fr;
   gap: 2px;
   grid-template-areas:
-    'out out out out out out'
-    's9 s4 s1 s2 s3 op1'
-    's10 s5 b7 b8 b9 op2'
-    's11 s6 b4 b5 b6 op3'
-    's12 s7 b1 b2 b3 op4'
-    's13 s8 b0 b0 com op5';
+    'out out out out out out out'
+    'e1 e2 e3 s1 s2 s3 op1'
+    'e4 e5 e6 b7 b8 b9 op2'
+    'e7 e8 e9 b4 b5 b6 op3'
+    'e10 e11 e12 b1 b2 b3 op4'
+    'e13 e14 e15 b0 b0 com op5';
 }
 
 .output {
@@ -155,6 +155,66 @@ body {
 
 .button_s3 {
   grid-area: s3;
+}
+
+.button_e1 {
+  grid-area: e1;
+}
+
+.button_e2 {
+  grid-area: e2;
+}
+
+.button_e3 {
+  grid-area: e3;
+}
+
+.button_e4 {
+  grid-area: e4;
+}
+
+.button_e5 {
+  grid-area: e5;
+}
+
+.button_e6 {
+  grid-area: e6;
+}
+
+.button_e7 {
+  grid-area: e7;
+}
+
+.button_e8 {
+  grid-area: e8;
+}
+
+.button_e9 {
+  grid-area: e9;
+}
+
+.button_e10 {
+  grid-area: e10;
+}
+
+.button_e11 {
+  grid-area: e11;
+}
+
+.button_e12 {
+  grid-area: e12;
+}
+
+.button_e13 {
+  grid-area: e13;
+}
+
+.button_e14 {
+  grid-area: e14;
+}
+
+.button_e15 {
+  grid-area: e15;
 }
 
 .button_0 {

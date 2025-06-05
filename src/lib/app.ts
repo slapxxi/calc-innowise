@@ -24,6 +24,7 @@ export const BUTTON_OP_SUB_SELECTOR = '[data-value="-"]';
 export const BUTTON_OP_MUL_SELECTOR = '[data-value="*"]';
 export const BUTTON_OP_DIV_SELECTOR = '[data-value="/"]';
 export const BUTTON_OP_POW_SELECTOR = '[data-value="**"]';
+export const BUTTON_OP_ROOT_SELECTOR = '[data-value="root"]';
 
 export class App {
   containerElement: HTMLDivElement;
@@ -124,6 +125,9 @@ export class App {
           break;
         case '**':
           el = document.querySelector(BUTTON_OP_POW_SELECTOR);
+          break;
+        case 'root':
+          el = document.querySelector(BUTTON_OP_ROOT_SELECTOR);
           break;
         default:
           return;
