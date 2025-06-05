@@ -43,6 +43,9 @@ export class Calculator {
       case CalculatorStatus.Result:
         this.handleResult(event);
         break;
+      case CalculatorStatus.TempDisplay:
+        this.handleTempDisplay(event);
+        break;
       case CalculatorStatus.Error:
         this.handleError(event);
         break;
@@ -243,17 +246,18 @@ export class Calculator {
         );
         break;
       case 'm+':
-        this.state.status = CalculatorStatus.Result;
+        this.state.status = CalculatorStatus.TempDisplay;
         this.memory.add(this.state.value);
         break;
       case 'm-':
-        this.state.status = CalculatorStatus.Result;
+        this.state.status = CalculatorStatus.TempDisplay;
         this.memory.subtract(this.state.value);
         break;
       case 'mr':
         if (this.memory.isEmpty()) {
           break;
         }
+        this.state.status = CalculatorStatus.TempDisplay;
         this.value = this.memory.getValue();
         break;
     }
@@ -342,16 +346,18 @@ export class Calculator {
         );
         break;
       case 'm+':
+        this.state.status = CalculatorStatus.TempDisplay;
         this.memory.add(this.state.value);
         break;
       case 'm-':
+        this.state.status = CalculatorStatus.TempDisplay;
         this.memory.subtract(this.state.value);
         break;
       case 'mr':
         if (this.memory.isEmpty()) {
           break;
         }
-        this.state.status = CalculatorStatus.Result;
+        this.state.status = CalculatorStatus.TempDisplay;
         this.value = this.memory.getValue();
         break;
     }
@@ -424,16 +430,38 @@ export class Calculator {
         );
         break;
       case 'm+':
+        this.state.status = CalculatorStatus.TempDisplay;
         this.memory.add(this.state.value);
         break;
       case 'm-':
+        this.state.status = CalculatorStatus.TempDisplay;
         this.memory.subtract(this.state.value);
         break;
       case 'mr':
         if (this.memory.isEmpty()) {
           break;
         }
+        this.state.status = CalculatorStatus.TempDisplay;
         this.value = this.memory.getValue();
+        break;
+    }
+  }
+
+  private handleTempDisplay(event: CalculatorEvent) {
+    switch (event.type) {
+      case 'digit':
+        this.state.status = CalculatorStatus.Waiting;
+        this.value = '0';
+        this.send(event);
+        break;
+      case 'clear':
+        this.state.status = CalculatorStatus.Waiting;
+        this.value = '0';
+        this.state.allClear = false;
+        break;
+      default:
+        this.state.status = CalculatorStatus.Waiting;
+        this.send(event);
         break;
     }
   }

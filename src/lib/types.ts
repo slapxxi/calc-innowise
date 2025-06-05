@@ -62,6 +62,7 @@ export enum CalculatorStatus {
   Calculating = 'calculating',
   Waiting = 'waiting',
   Result = 'result',
+  TempDisplay = 'temp-display',
   Error = 'error',
 }
 
