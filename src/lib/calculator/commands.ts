@@ -1,5 +1,6 @@
 import { Calculator } from '../calculator';
 import { Command } from '../types';
+import { operate } from '../utils';
 
 export class Power2Command implements Command {
   private calculator: Calculator;
@@ -9,7 +10,7 @@ export class Power2Command implements Command {
   }
 
   execute() {
-    const result = Calculator.operate(this.calculator.value, '2', '**');
+    const result = operate(this.calculator.value, '2', '**');
     this.calculator.send({ type: 'assign', value: result });
   }
 }
@@ -22,7 +23,7 @@ export class Power3Command implements Command {
   }
 
   execute() {
-    const result = Calculator.operate(this.calculator.value, '3', '**');
+    const result = operate(this.calculator.value, '3', '**');
     this.calculator.send({ type: 'assign', value: result });
   }
 }
@@ -35,7 +36,7 @@ export class Root2Command implements Command {
   }
 
   execute() {
-    const result = Calculator.operate(this.calculator.value, '2', 'root');
+    const result = operate(this.calculator.value, '2', 'root');
     this.calculator.send({ type: 'assign', value: result });
   }
 }
@@ -48,7 +49,7 @@ export class Root3Command implements Command {
   }
 
   execute() {
-    const result = Calculator.operate(this.calculator.value, '3', 'root');
+    const result = operate(this.calculator.value, '3', 'root');
     this.calculator.send({ type: 'assign', value: result });
   }
 }
@@ -61,7 +62,7 @@ export class TenToPowerCommand implements Command {
   }
 
   execute() {
-    const result = Calculator.operate('10', this.calculator.value, '**');
+    const result = operate('10', this.calculator.value, '**');
     this.calculator.send({ type: 'assign', value: result });
   }
 }
@@ -74,7 +75,7 @@ export class OneDivCommand implements Command {
   }
 
   execute() {
-    const result = Calculator.operate('1', this.calculator.value, '/');
+    const result = operate('1', this.calculator.value, '/');
     this.calculator.send({ type: 'assign', value: result });
   }
 }
@@ -87,7 +88,7 @@ export class FactorialCommand implements Command {
   }
 
   execute() {
-    const result = Calculator.operate(this.calculator.value, '', '!');
+    const result = operate(this.calculator.value, '', '!');
     this.calculator.send({ type: 'assign', value: result });
   }
 }

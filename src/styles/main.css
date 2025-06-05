@@ -56,6 +56,10 @@ body {
   touch-action: manipulation;
 }
 
+.memory-container {
+  filter: brightness(0.6);
+}
+
 .calc {
   background-color: var(--calc-bg);
   flex: 1;

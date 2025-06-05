@@ -14,7 +14,9 @@ import { CalculatorStatus, Shortcut, type CalculatorEvent } from './types';
 import { removeEmptyProperties } from './utils';
 
 export const CONTAINER_SELECTOR = '.calc';
-export const OUTPUT_CONTAINER_SELECTOR = '.output';
+export const OUTPUT_CONTAINER_SELECTOR = '.output-container';
+export const MEMORY_CONTAINER_SELECTOR = '.memory-container';
+export const MEMORY_TEXT_SELECTOR = '.memory__text';
 export const OUTPUT_SELECTOR = '.output__text';
 export const CLEAR_BUTTON_SELECTOR = '[data-type="clear"]';
 
@@ -29,6 +31,8 @@ export const BUTTON_OP_ROOT_SELECTOR = '[data-value="root"]';
 export class App {
   containerElement: HTMLDivElement;
   outputContainerElement: HTMLDivElement;
+  memoryContainerElement: HTMLDivElement;
+  memoryTextElement: HTMLDivElement;
   outputElement: HTMLDivElement;
   clearButtonElement: HTMLButtonElement;
 
@@ -53,17 +57,26 @@ export class App {
     const clearButtonElement = document.querySelector<HTMLButtonElement>(
       CLEAR_BUTTON_SELECTOR
     );
+    const memoryContainerElement = document.querySelector<HTMLDivElement>(
+      MEMORY_CONTAINER_SELECTOR
+    );
+    const memoryTextElement =
+      document.querySelector<HTMLDivElement>(MEMORY_TEXT_SELECTOR);
 
     if (
       containerElement &&
       outputContainerElement &&
       outputElement &&
-      clearButtonElement
+      clearButtonElement &&
+      memoryContainerElement &&
+      memoryTextElement
     ) {
       this.containerElement = containerElement;
       this.outputContainerElement = outputContainerElement;
       this.outputElement = outputElement;
       this.clearButtonElement = clearButtonElement;
+      this.memoryContainerElement = memoryContainerElement;
+      this.memoryTextElement = memoryTextElement;
 
       this.calculator = new Calculator();
 
@@ -85,7 +98,9 @@ export class App {
 
   render() {
     this.outputElement.textContent = this.calculator.formattedValue;
+    this.memoryTextElement.textContent = this.calculator.memory.getValue();
     this.adjustOutputContainer();
+    this.adjustMemoryContainer();
     this.highlightActiveOperator();
 
     if (this.calculator.isAllClear) {
@@ -142,14 +157,31 @@ export class App {
 
   private adjustOutputContainer() {
     if (this.calculator.formattedValue.length <= 15) {
-      this.outputContainerElement.setAttribute('viewBox', '0 0 100 30');
+      this.outputContainerElement.setAttribute('viewBox', '0 0 100 15');
     } else {
       const calculatedWidth = this.calculator.formattedValue.length * 6.25;
-      const aspectRatio = 30 / 100;
+      const aspectRatio = 15 / 100;
       this.outputContainerElement.setAttribute(
         'viewBox',
         `0 0 ${calculatedWidth} ${calculatedWidth * aspectRatio}`
       );
+    }
+  }
+
+  private adjustMemoryContainer() {
+    const memoryValue = this.calculator.memory.getValue();
+
+    if (memoryValue !== null) {
+      if (memoryValue.length <= 15) {
+        this.memoryContainerElement.setAttribute('viewBox', '0 0 100 15');
+      } else {
+        const calculatedWidth = memoryValue.length * 6.25;
+        const aspectRatio = 15 / 100;
+        this.memoryContainerElement.setAttribute(
+          'viewBox',
+          `0 0 ${calculatedWidth} ${calculatedWidth * aspectRatio}`
+        );
+      }
     }
   }
 

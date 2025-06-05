@@ -1,8 +1,14 @@
 /* eslint-disable */
+import { CalcMemory } from './calculator/calc-memory';
 import { CalcState, CalculatorEvent, CalculatorStatus } from './types';
-import { factorial, nthRoot } from './utils';
-
-const MAX_OUTPUT_LENGTH = 15;
+import {
+  calcPercentage,
+  calculatorSmartDisplay,
+  negate,
+  normalizeOutput,
+  operate,
+  truncateNumber,
+} from './utils';
 
 export class Calculator {
   state: CalcState = {
@@ -10,22 +16,29 @@ export class Calculator {
     value: '0',
     operand: null,
     operator: null,
-    memory: null,
     allClear: true,
     formattedValue: '0',
   };
+  memory = new CalcMemory();
 
   send(event: CalculatorEvent) {
+    // todo: remove
     console.log('Calculator event:', event);
+
+    if (event.type === 'mc') {
+      this.memory.clear();
+      return;
+    }
+
     switch (this.state.status) {
       case CalculatorStatus.Idle:
         this.handleIdle(event);
         break;
-      case CalculatorStatus.Calculating:
-        this.handleCalculating(event);
-        break;
       case CalculatorStatus.Waiting:
         this.handleWaiting(event);
+        break;
+      case CalculatorStatus.Calculating:
+        this.handleCalculating(event);
         break;
       case CalculatorStatus.Result:
         this.handleResult(event);
@@ -36,6 +49,7 @@ export class Calculator {
       default:
         console.error('Unknown state:', this.state.status);
     }
+    // todo: remove
     this.log();
   }
 
@@ -64,7 +78,7 @@ export class Calculator {
 
   set value(val: string) {
     this.state.value = val;
-    this.state.formattedValue = Calculator.normalizeValue(val);
+    this.state.formattedValue = normalizeOutput(val);
   }
 
   private handleIdle(event: CalculatorEvent) {
@@ -91,6 +105,21 @@ export class Calculator {
         this.state.status = CalculatorStatus.Waiting;
         this.value = this.state.value + '.';
         break;
+      case 'clear':
+        if (this.memory.isEmpty()) {
+          if (this.state.value !== '0') {
+            this.value = '0';
+          }
+          break;
+        }
+        this.memory.clear();
+        break;
+      case 'mr':
+        if (this.memory.isEmpty()) {
+          break;
+        }
+        this.value = this.memory.getValue()!;
+        break;
     }
   }
 
@@ -108,7 +137,7 @@ export class Calculator {
         this.value =
           this.state.value === '0'
             ? event.value
-            : Calculator.truncateNumber(this.state.value + event.value);
+            : truncateNumber(this.state.value + event.value);
         break;
       case 'clear':
         if (this.state.value === '0' || this.state.operand === null) {
@@ -129,20 +158,17 @@ export class Calculator {
           this.state.operator === '*' ||
           this.state.operator === '/'
         ) {
-          let percentage = Calculator.calcPercentage(this.state.value, '1');
+          let percentage = calcPercentage(this.state.value, '1');
           this.state.value = percentage;
-          this.state.formattedValue = Calculator.normalizeValue(
-            Calculator.smartDisplay(percentage)
+          this.state.formattedValue = normalizeOutput(
+            calculatorSmartDisplay(percentage)
           );
           break;
         }
-        let percentage = Calculator.calcPercentage(
-          this.state.operand,
-          this.state.value
-        );
+        let percentage = calcPercentage(this.state.operand, this.state.value);
         this.state.value = percentage;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(percentage)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(percentage)
         );
         break;
       case 'comma':
@@ -158,7 +184,7 @@ export class Calculator {
           this.state.operand = this.state.value;
           break;
         }
-        result = Calculator.operate(
+        result = operate(
           this.state.operand!,
           this.state.value,
           this.state.operator
@@ -172,8 +198,8 @@ export class Calculator {
         }
         this.state.status = CalculatorStatus.Calculating;
         this.state.value = result;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(result)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(result)
         );
         this.state.operand = result;
         this.state.operator = event.value;
@@ -182,7 +208,7 @@ export class Calculator {
         if (this.state.operand === null) {
           break;
         }
-        result = Calculator.operate(
+        result = operate(
           this.state.operand,
           this.state.value,
           this.state.operator!
@@ -197,10 +223,10 @@ export class Calculator {
         }
         this.state.status = CalculatorStatus.Result;
         this.state.operand = this.state.value;
-        this.value = Calculator.smartDisplay(result);
+        this.value = calculatorSmartDisplay(result);
         break;
       case 'negate':
-        this.value = Calculator.negate(this.state.value);
+        this.value = negate(this.state.value);
         break;
       case 'assign':
         if (event.value === 'Error' || event.value === 'Infinity') {
@@ -209,9 +235,23 @@ export class Calculator {
           break;
         }
         this.state.value = event.value;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(event.value)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(event.value)
         );
+        break;
+      case 'm+':
+        this.state.status = CalculatorStatus.Result;
+        this.memory.add(this.state.value);
+        break;
+      case 'm-':
+        this.state.status = CalculatorStatus.Result;
+        this.memory.subtract(this.state.value);
+        break;
+      case 'mr':
+        if (this.memory.isEmpty()) {
+          break;
+        }
+        this.value = this.memory.getValue();
         break;
     }
   }
@@ -244,7 +284,7 @@ export class Calculator {
         this.state.allClear = true;
         break;
       case 'result':
-        result = Calculator.operate(
+        result = operate(
           this.state.value,
           this.state.operand!,
           this.state.operator!
@@ -259,26 +299,23 @@ export class Calculator {
         this.state.status = CalculatorStatus.Result;
         this.state.operand = this.state.value;
         this.state.value = result;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(result)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(result)
         );
         break;
       case 'percentage':
         if (this.state.operator === '/' || this.state.operator === '*') {
-          let percentage = Calculator.calcPercentage(this.state.value, '1');
+          let percentage = calcPercentage(this.state.value, '1');
           this.state.value = percentage;
-          this.state.formattedValue = Calculator.normalizeValue(
-            Calculator.smartDisplay(percentage)
+          this.state.formattedValue = normalizeOutput(
+            calculatorSmartDisplay(percentage)
           );
           break;
         }
-        let percentage = Calculator.calcPercentage(
-          this.state.operand!,
-          this.state.value
-        );
+        let percentage = calcPercentage(this.state.operand!, this.state.value);
         this.state.value = percentage;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(percentage)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(percentage)
         );
         break;
       case 'comma':
@@ -293,9 +330,21 @@ export class Calculator {
         }
         this.state.status = CalculatorStatus.Waiting;
         this.state.value = event.value;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(event.value)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(event.value)
         );
+        break;
+      case 'm+':
+        this.memory.add(this.state.value);
+        break;
+      case 'm-':
+        this.memory.subtract(this.state.value);
+        break;
+      case 'mr':
+        if (this.memory.isEmpty()) {
+          break;
+        }
+        this.value = this.memory.getValue();
         break;
     }
   }
@@ -314,14 +363,14 @@ export class Calculator {
         this.state.operand = this.state.value;
         break;
       case 'result':
-        result = Calculator.operate(
+        result = operate(
           this.state.value,
           this.state.operand!,
           this.state.operator!
         );
         this.state.value = result;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(result)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(result)
         );
         break;
       case 'clear':
@@ -337,13 +386,13 @@ export class Calculator {
         this.state.allClear = true;
         break;
       case 'negate':
-        this.value = Calculator.negate(this.state.value);
+        this.value = negate(this.state.value);
         break;
       case 'percentage':
-        let percentage = Calculator.calcPercentage(this.state.value, '1');
+        let percentage = calcPercentage(this.state.value, '1');
         this.state.value = percentage;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(percentage)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(percentage)
         );
         break;
       case 'comma':
@@ -357,9 +406,21 @@ export class Calculator {
           break;
         }
         this.state.value = event.value;
-        this.state.formattedValue = Calculator.normalizeValue(
-          Calculator.smartDisplay(event.value)
+        this.state.formattedValue = normalizeOutput(
+          calculatorSmartDisplay(event.value)
         );
+        break;
+      case 'm+':
+        this.memory.add(this.state.value);
+        break;
+      case 'm-':
+        this.memory.subtract(this.state.value);
+        break;
+      case 'mr':
+        if (this.memory.isEmpty()) {
+          break;
+        }
+        this.value = this.memory.getValue();
         break;
     }
   }
@@ -374,104 +435,6 @@ export class Calculator {
         this.state.allClear = true;
         break;
     }
-  }
-
-  private static normalizeValue(value: string) {
-    return value.replace('.', ',');
-  }
-
-  private static smartDisplay(value: string, significantDigits: number = 12) {
-    const num = parseFloat(value);
-    return parseFloat(num.toPrecision(significantDigits)).toString();
-  }
-
-  private static calcPercentage(operand: string, percentage: string) {
-    const numOperand = parseFloat(operand);
-    const numPercentage = parseFloat(percentage);
-    const result = (numOperand / 100) * numPercentage;
-    return String(result);
-  }
-
-  /**
-   * Performs basic arithmetic operation on two numbers represented as strings
-   */
-  static operate(
-    a: string,
-    b: string,
-    operator: string
-  ): string | 'Error' | 'Infinity' {
-    const aNum = parseFloat(a);
-    const bNum = parseFloat(b);
-
-    let result: number;
-
-    switch (operator) {
-      case '+':
-        result = aNum + bNum;
-        break;
-      case '-':
-        result = aNum - bNum;
-        break;
-      case '*':
-        result = aNum * bNum;
-        break;
-      case '/':
-        if (bNum === 0) {
-          result = NaN;
-        }
-        result = aNum / bNum;
-        break;
-      case '**':
-        result = aNum ** bNum;
-        break;
-      case 'root':
-        try {
-          result = nthRoot(aNum, bNum);
-        } catch {
-          result = NaN;
-        }
-        break;
-      case '!':
-        try {
-          result = factorial(aNum);
-        } catch {
-          result = NaN;
-        }
-        break;
-      default:
-        throw new Error(`Unknown operator: ${operator}`);
-    }
-
-    if (isNaN(result)) {
-      return 'Error';
-    }
-
-    if (!isFinite(result)) {
-      return 'Infinity';
-    }
-
-    return String(result);
-  }
-
-  private static truncateNumber(
-    value: string,
-    max: number = MAX_OUTPUT_LENGTH
-  ): string {
-    if (Calculator.isFloat(value)) {
-      return value.slice(0, max + 1);
-    }
-    return value.slice(0, max);
-  }
-
-  private static isFloat(value: string): boolean {
-    return value.includes('.');
-  }
-
-  private static negate(value: string): string {
-    if (value.startsWith('-')) {
-      return value.slice(1);
-    }
-    return '-' + value;
   }
 
   private log() {

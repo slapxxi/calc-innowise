@@ -1,11 +1,13 @@
-import type { OperatorValue } from '@/lib/types';
-
 const MAX_OUTPUT_LENGTH = 15;
 
 /**
  * Performs a basic arithmetic operation on two numbers
  */
-export function operate(a: string, b: string, operator: string): string {
+export function operate(
+  a: string,
+  b: string,
+  operator: string
+): string | 'Error' | 'Infinity' {
   const aNum = parseFloat(a);
   const bNum = parseFloat(b);
 
@@ -27,6 +29,23 @@ export function operate(a: string, b: string, operator: string): string {
       }
       result = aNum / bNum;
       break;
+    case '**':
+      result = aNum ** bNum;
+      break;
+    case 'root':
+      try {
+        result = nthRoot(aNum, bNum);
+      } catch {
+        result = NaN;
+      }
+      break;
+    case '!':
+      try {
+        result = factorial(aNum);
+      } catch {
+        result = NaN;
+      }
+      break;
     default:
       throw new Error(`Unknown operator: ${operator}`);
   }
@@ -40,45 +59,6 @@ export function operate(a: string, b: string, operator: string): string {
   }
 
   return String(result);
-}
-
-export function highlightActiveOperator(operator: OperatorValue) {
-  let el;
-  switch (operator) {
-    case '*':
-      el = document.querySelector('[data-value="*"]');
-      break;
-    case '-':
-      el = document.querySelector('[data-value="-"]');
-      break;
-    case '+':
-      el = document.querySelector('[data-value="+"]');
-      break;
-    case '/':
-      el = document.querySelector('[data-value="/"]');
-      break;
-    default:
-      return;
-  }
-  el?.classList.add('button_active');
-}
-
-/**
- * Removes the active operator highlight from the buttons.
- */
-export function removeActiveOperator() {
-  document.querySelector('.button_active')?.classList.remove('button_active');
-}
-
-/**
- * Changes the text of the clear button based on the current state.
- * @param {string} text - The text to set for the clear button.
- */
-export function changeClearButtonText(text: string) {
-  const clearButton = document.querySelector('[data-type="clear"]');
-  if (clearButton) {
-    clearButton.textContent = text;
-  }
 }
 
 /**
@@ -152,7 +132,10 @@ export function calcPercentage(operand: string, percentage: string) {
  * Negates a number represented as a string.
  */
 export function negate(value: string) {
-  return String(-parseFloat(value));
+  if (value.startsWith('-')) {
+    return value.slice(1);
+  }
+  return '-' + value;
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

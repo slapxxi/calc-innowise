@@ -2,6 +2,10 @@
   position: relative;
 }
 
+.overflow-visible {
+  overflow: visible;
+}
+
 .hidden {
   display: none;
 }

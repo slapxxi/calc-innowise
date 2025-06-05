@@ -1012,4 +1012,85 @@ test.describe('Calculator', () => {
       await expect(output).toHaveText('24');
     });
   });
+
+  test.describe('memory', () => {
+    test('empty by default', async ({ page }) => {
+      const output = page.getByTestId('memory-output');
+      await expect(output).toHaveText('');
+    });
+
+    test.describe('when no input', () => {
+      test('adding does nothing', async ({ page }) => {
+        await page.getByTestId('m+').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('');
+      });
+
+      test('subtracting does nothing', async ({ page }) => {
+        await page.getByTestId('m-').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('');
+      });
+
+      test('clearing does nothing', async ({ page }) => {
+        await page.getByTestId('mc').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('');
+      });
+
+      test('restoring does nothing', async ({ page }) => {
+        await page.getByTestId('mr').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('');
+      });
+    });
+
+    test.describe('when there is single input', () => {
+      test.beforeEach(async ({ page }) => {
+        await typeNumber(page, '123');
+      });
+
+      test('adds to memory', async ({ page }) => {
+        await page.getByTestId('m+').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('123');
+      });
+
+      test('adds multiple times', async ({ page }) => {
+        await page.getByTestId('m+').click();
+        await page.getByTestId('m+').click();
+        await page.getByTestId('m+').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('369');
+      });
+
+      test('subtracts from memory', async ({ page }) => {
+        await page.getByTestId('m-').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('-123');
+      });
+      test('subtracts multiple times', async ({ page }) => {
+        await page.getByTestId('m-').click();
+        await page.getByTestId('m-').click();
+        await page.getByTestId('m-').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('-369');
+      });
+
+      test('adding and subtracting from memory resets', async ({ page }) => {
+        await page.getByTestId('m+').click();
+        await page.getByTestId('m-').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('');
+      });
+
+      test('clears memory', async ({ page }) => {
+        await page.getByTestId('m+').click();
+        const output = page.getByTestId('memory-output');
+        await expect(output).toHaveText('123');
+        await page.getByTestId('mc').click();
+        await expect(output).toHaveText('');
+      });
+    });
+  });
 });

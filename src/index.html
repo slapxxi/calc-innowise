@@ -127,19 +127,38 @@
       </header>
 
       <form action="none" class="calc">
-        <svg viewBox="0 0 100 30" class="output relative">
-          <text
-            font-size="11"
-            text-anchor="end"
-            x="100%"
-            y="100%"
-            fill="currentColor"
-            class="output__text"
-            data-testId="output"
+        <div class="output">
+          <svg
+            viewBox="0 0 100 15"
+            class="relative overflow-visible memory-container"
           >
-            0
-          </text>
-        </svg>
+            <text
+              font-size="11"
+              text-anchor="end"
+              x="100%"
+              y="100%"
+              fill="currentColor"
+              class="memory__text"
+              data-testId="memory-output"
+            ></text>
+          </svg>
+          <svg
+            viewBox="0 0 100 15"
+            class="relative overflow-visible output-container"
+          >
+            <text
+              font-size="11"
+              text-anchor="end"
+              x="100%"
+              y="100%"
+              fill="currentColor"
+              class="output__text"
+              data-testId="output"
+            >
+              0
+            </text>
+          </svg>
+        </div>
 
         <button
           type="button"
@@ -486,8 +505,7 @@
         <button
           type="button"
           class="button button_special button_e11"
-          data-type="shortcut"
-          data-value="mc"
+          data-type="mc"
           data-testId="mc"
         >
           mc
@@ -496,8 +514,7 @@
         <button
           type="button"
           class="button button_special button_e14"
-          data-type="shortcut"
-          data-value="m+"
+          data-type="m+"
           data-testId="m+"
         >
           m+
@@ -506,8 +523,7 @@
         <button
           type="button"
           class="button button_special button_e15"
-          data-type="shortcut"
-          data-value="m-"
+          data-type="m-"
           data-testId="m-"
         >
           m-
@@ -516,8 +532,7 @@
         <button
           type="button"
           class="button button_special button_e12"
-          data-type="shortcut"
-          data-value="mr"
+          data-type="mr"
           data-testId="mr"
         >
           mr

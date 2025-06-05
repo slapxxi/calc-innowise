@@ -18,6 +18,13 @@ type SubOp = { type: 'operator'; value: '-' };
 type PowerOp = { type: 'operator'; value: '**' };
 type RootOp = { type: 'operator'; value: 'root' };
 
+type MemoryClear = { type: 'mc' };
+type MemoryRecall = { type: 'mr' };
+type MemoryAdd = { type: 'm+' };
+type MemorySubtract = { type: 'm-' };
+
+type MemoryEvent = MemoryClear | MemoryRecall | MemoryAdd | MemorySubtract;
+
 export type Shortcut =
   | 'n**2'
   | 'n**3'
@@ -43,6 +50,7 @@ export type CalculatorEvent =
   | ResultEvent
   | PercentageEvent
   | AssignEvent
+  | MemoryEvent
   | OperatorEvent;
 
 /**
@@ -63,6 +71,5 @@ export type CalcState = {
   operator: OperatorValue | null;
   value: string;
   formattedValue: string;
-  memory: string | null;
   allClear: boolean;
 };
