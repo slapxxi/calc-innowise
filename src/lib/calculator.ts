@@ -454,6 +454,12 @@ export class Calculator {
         this.value = '0';
         this.send(event);
         break;
+      case 'clear':
+        if (this.state.operator === null) {
+          this.state.status = CalculatorStatus.Waiting;
+          this.value = '0';
+          break;
+        }
       default:
         this.state.status = CalculatorStatus.Waiting;
         this.send(event);
