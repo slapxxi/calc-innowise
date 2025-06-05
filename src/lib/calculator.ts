@@ -104,6 +104,7 @@ export class Calculator {
       case 'comma':
         this.state.status = CalculatorStatus.Waiting;
         this.value = this.state.value + '.';
+        this.state.allClear = false;
         break;
       case 'clear':
         if (this.memory.isEmpty()) {
@@ -265,10 +266,12 @@ export class Calculator {
       case 'digit':
         this.state.status = CalculatorStatus.Waiting;
         this.value = event.value;
+        this.state.allClear = false;
         break;
       case 'negate':
         this.state.status = CalculatorStatus.Waiting;
         this.value = '-0';
+        this.state.allClear = false;
         break;
       case 'operator':
         this.state.operator = event.value;
@@ -300,11 +303,12 @@ export class Calculator {
           break;
         }
         this.state.status = CalculatorStatus.Result;
-        this.state.operand = this.state.value;
         this.state.value = result;
+        this.state.operand = this.state.value;
         this.state.formattedValue = normalizeOutput(
           calculatorSmartDisplay(result)
         );
+        this.state.allClear = false;
         break;
       case 'percentage':
         if (this.state.operator === '/' || this.state.operator === '*') {
@@ -347,6 +351,7 @@ export class Calculator {
         if (this.memory.isEmpty()) {
           break;
         }
+        this.state.status = CalculatorStatus.Result;
         this.value = this.memory.getValue();
         break;
     }
@@ -366,6 +371,9 @@ export class Calculator {
         this.state.operand = this.state.value;
         break;
       case 'result':
+        if (this.state.operator === null) {
+          break;
+        }
         result = operate(
           this.state.value,
           this.state.operand!,
