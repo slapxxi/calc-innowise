@@ -1,0 +1,277 @@
+.header {
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  background-color: var(--color-calc);
+}
+
+.icon {
+  background-color: transparent;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  filter: url('#borderFilter');
+  touch-action: manipulation;
+}
+
+.memory-container {
+  filter: brightness(0.6);
+}
+
+.calc {
+  background-color: var(--calc-bg);
+  flex: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(90px, 1fr));
+  grid-template-rows: minmax(140px, auto) repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 2px;
+  /* grid-template-areas: */
+  /*   'out out out out out out out' */
+  /*   'e1 e2 e3 s1 s2 s3 op1' */
+  /*   'e4 e5 e6 b7 b8 b9 op2' */
+  /*   'e7 e8 e9 b4 b5 b6 op3' */
+  /*   'e10 e11 e12 b1 b2 b3 op4' */
+  /*   'e13 e14 e15 b0 b0 com op5'; */
+  grid-template-areas:
+    'out out out out'
+    'c neg per div'
+    'b1 b2 b3 mul'
+    'b4 b5 b6 minus'
+    'b7 b8 b9 plus'
+    'b0 b0 com eq'
+    'pow npow2 npow3 tpown'
+    'root root2 root3 tpown'
+    'fac mc mp fill'
+    'odivn mr mm fill';
+}
+
+.output {
+  grid-area: out;
+  overflow: visible;
+  padding: 1rem;
+  color: var(--text-color);
+}
+
+.button {
+  --bg: var(--button-bg);
+  --fg: var(--button-fg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--bg);
+  font-weight: 500;
+  font-size: var(--text-md);
+  color: var(--fg);
+}
+
+.button:hover {
+  filter: brightness(0.9);
+}
+
+.button:active {
+  filter: brightness(0.8);
+}
+
+.button__icon {
+  width: 2.4rem;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+.button_operator {
+  --bg: var(--operator-bg);
+  --fg: var(--operator-fg);
+}
+
+.button_special {
+  background-color: var(--special-bg);
+  color: var(--special-fg);
+}
+
+.button_active {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+.button_root {
+  grid-area: root;
+}
+
+.button_root2 {
+  grid-area: root2;
+}
+
+.button_root3 {
+  grid-area: root3;
+}
+
+.button_odivn {
+  grid-area: odivn;
+}
+
+.button_tpown {
+  grid-area: tpown;
+}
+
+.button_fac {
+  grid-area: fac;
+}
+
+.button_mc {
+  grid-area: mc;
+}
+
+.button_mp {
+  grid-area: mp;
+}
+
+.button_mm {
+  grid-area: mm;
+}
+
+.button_mr {
+  grid-area: mr;
+}
+
+.button_c {
+  grid-area: c;
+}
+
+.button_neg {
+  grid-area: neg;
+}
+
+.button_per {
+  grid-area: per;
+}
+
+.button_div {
+  grid-area: div;
+}
+
+.button_mul {
+  grid-area: mul;
+}
+
+.button_minus {
+  grid-area: minus;
+}
+
+.button_plus {
+  grid-area: plus;
+}
+
+.button_eq {
+  grid-area: eq;
+}
+
+.button_pow {
+  grid-area: pow;
+}
+
+.button_npow2 {
+  grid-area: npow2;
+}
+
+.button_npow3 {
+  grid-area: npow3;
+}
+
+.button_com {
+  grid-area: com;
+}
+
+.button_1 {
+  grid-area: b1;
+}
+
+.button_2 {
+  grid-area: b2;
+}
+
+.button_3 {
+  grid-area: b3;
+}
+
+.button_4 {
+  grid-area: b4;
+}
+
+.button_5 {
+  grid-area: b5;
+}
+
+.button_6 {
+  grid-area: b6;
+}
+
+.button_7 {
+  grid-area: b7;
+}
+
+.button_8 {
+  grid-area: b8;
+}
+
+.button_9 {
+  grid-area: b9;
+}
+
+.button_0 {
+  grid-area: b0;
+}
+
+.button_fill {
+  grid-area: fill;
+}
+
+@media screen and (min-width: 768px) {
+  :root {
+    --border-radius: 10px;
+  }
+
+  .header {
+    padding: 1rem;
+    max-width: var(--max-w);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
+  }
+
+  .calc {
+    position: relative;
+    max-width: var(--max-w);
+    min-height: 54rem;
+    flex: 0 0 auto;
+    overflow: hidden;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    grid-template-columns: repeat(7, minmax(90px, 1fr));
+    grid-template-rows: minmax(140px, auto) repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    grid-template-areas:
+      'out out out out out out out'
+      'npow2 npow3 pow c neg per div'
+      'root2 root3 root b7 b8 b9 mul'
+      'fac odivn tpown b4 b5 b6 minus'
+      'fill mc mr b1 b2 b3 plus'
+      'fill mp mm b0 b0 com eq';
+  }
+
+  .button {
+    filter: url('#borderFilter');
+  }
+}
