@@ -1,3 +1,5 @@
+import { Calculator } from './calculator';
+
 export interface Command {
   execute(): void;
 }
@@ -57,7 +59,7 @@ export type CalculatorEvent =
  * Current finite state of the calculator
  */
 
-export enum CalculatorStatus {
+export enum CalculatorStatusEnum {
   Idle = 'idle',
   Calculating = 'calculating',
   Waiting = 'waiting',
@@ -66,8 +68,12 @@ export enum CalculatorStatus {
   Error = 'error',
 }
 
+export interface CalcStatus {
+  calculator: Calculator;
+  send(event: CalculatorEvent): void;
+}
+
 export type CalcState = {
-  status: CalculatorStatus;
   operand: string | null;
   operator: OperatorValue | null;
   value: string;

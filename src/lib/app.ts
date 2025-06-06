@@ -10,7 +10,7 @@ import {
 } from './calculator/commands';
 import { Dropdown } from './dropdown';
 import { InitializationError } from './errors';
-import { CalculatorStatus, Shortcut, type CalculatorEvent } from './types';
+import { CalculatorStatusEnum, Shortcut, type CalculatorEvent } from './types';
 import { removeEmptyProperties } from './utils';
 
 export const CONTAINER_SELECTOR = '.calc';
@@ -123,7 +123,7 @@ export class App {
       .querySelector(BUTTON_ACTIVE_SELECTOR)
       ?.classList.remove('button_active');
 
-    if (this.calculator.is(CalculatorStatus.Calculating)) {
+    if (this.calculator.is(CalculatorStatusEnum.Calculating)) {
       let el;
       switch (this.calculator.operator) {
         case '*':
