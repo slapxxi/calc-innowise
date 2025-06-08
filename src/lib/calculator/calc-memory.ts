@@ -17,7 +17,7 @@ export class CalcMemory {
       result = operate(this.value, value, '+');
     }
 
-    if (this.value === '0' || result === 'Error' || result === 'Infinity') {
+    if (result === '0' || result === 'Error' || result === 'Infinity') {
       this.clear();
       return;
     }
