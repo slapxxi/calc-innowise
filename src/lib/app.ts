@@ -19,7 +19,9 @@ export const MEMORY_CONTAINER_SELECTOR = '.memory-container';
 export const MEMORY_TEXT_SELECTOR = '.memory__text';
 export const OUTPUT_SELECTOR = '.output__text';
 export const CLEAR_BUTTON_SELECTOR = '[data-type="clear"]';
+export const TOGGLE_EXTRA_BUTTON_SELECTOR = '[data-toggle-extra]';
 
+export const BUTTON_OP_SELECTOR = '.button_operator';
 export const BUTTON_ACTIVE_SELECTOR = '.button_active';
 export const BUTTON_OP_ADD_SELECTOR = '[data-value="+"]';
 export const BUTTON_OP_SUB_SELECTOR = '[data-value="-"]';
@@ -35,6 +37,7 @@ export class App {
   memoryTextElement: HTMLDivElement;
   outputElement: HTMLDivElement;
   clearButtonElement: HTMLButtonElement;
+  toggleExtraButtonElement: HTMLButtonElement;
 
   power2Command: Power2Command;
   power3Command: Power3Command;
@@ -62,8 +65,12 @@ export class App {
     );
     const memoryTextElement =
       document.querySelector<HTMLDivElement>(MEMORY_TEXT_SELECTOR);
+    const toggleExtraButtonElement = document.querySelector<HTMLButtonElement>(
+      TOGGLE_EXTRA_BUTTON_SELECTOR
+    );
 
     if (
+      toggleExtraButtonElement &&
       containerElement &&
       outputContainerElement &&
       outputElement &&
@@ -71,6 +78,7 @@ export class App {
       memoryContainerElement &&
       memoryTextElement
     ) {
+      this.toggleExtraButtonElement = toggleExtraButtonElement;
       this.containerElement = containerElement;
       this.outputContainerElement = outputContainerElement;
       this.outputElement = outputElement;
@@ -112,15 +120,24 @@ export class App {
 
   addEventHandlers() {
     this.containerElement.addEventListener('click', this.handleClick);
+    this.toggleExtraButtonElement.addEventListener(
+      'click',
+      this.handleToggleExtra.bind(this)
+    );
   }
 
   removeEventHandlers() {
     this.containerElement.removeEventListener('click', this.handleClick);
   }
 
+  private handleToggleExtra() {
+    this.containerElement.classList.toggle('calc_extra');
+    this.toggleExtraButtonElement.classList.toggle('button_active');
+  }
+
   private highlightActiveOperator() {
     document
-      .querySelector(BUTTON_ACTIVE_SELECTOR)
+      .querySelector(`${BUTTON_ACTIVE_SELECTOR}${BUTTON_OP_SELECTOR}`)
       ?.classList.remove('button_active');
 
     if (this.calculator.is(CalculatorStatusEnum.Calculating)) {
