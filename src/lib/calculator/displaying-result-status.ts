@@ -45,16 +45,12 @@ export class DisplayingResultStatus implements CalcStatus {
         );
         break;
       case 'clear':
-        if (calc.state.value === '0') {
+        if (calc.state.operator === null) {
           calc.transition(CalculatorStatusEnum.Idle);
-          calc.value = '0';
-          calc.state.operand = null;
-          calc.state.operator = null;
-          calc.state.allClear = true;
-          calc.memory.clear();
+          calc.resetState();
           break;
         }
-        calc.transition(CalculatorStatusEnum.Waiting);
+        calc.transition(CalculatorStatusEnum.Calculating);
         calc.value = '0';
         calc.state.allClear = true;
         break;

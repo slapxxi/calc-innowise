@@ -13,10 +13,7 @@ export class ErrorStatus implements CalcStatus {
     switch (event.type) {
       case 'clear':
         calc.transition(CalculatorStatusEnum.Idle);
-        calc.value = '0';
-        calc.state.operand = null;
-        calc.state.operator = null;
-        calc.state.allClear = true;
+        calc.resetState();
         break;
     }
   }

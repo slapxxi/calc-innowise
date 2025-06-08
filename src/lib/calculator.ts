@@ -100,8 +100,16 @@ export class Calculator {
     this.state.formattedValue = normalizeOutput(val);
   }
 
+  resetState() {
+    this.value = '0';
+    this.state.operand = null;
+    this.state.operator = null;
+    this.state.allClear = true;
+  }
+
   private log() {
     console.group('Calculator State');
+    console.log(this.statusString);
     console.table(this.state);
     console.groupEnd();
   }

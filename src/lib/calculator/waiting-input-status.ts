@@ -37,10 +37,7 @@ export class WaitingForInputStatus implements CalcStatus {
       case 'clear':
         if (calc.state.operand === null) {
           calc.transition(CalculatorStatusEnum.Idle);
-          calc.value = '0';
-          calc.state.operator = null;
-          calc.state.operand = null;
-          calc.state.allClear = true;
+          calc.resetState();
           calc.memory.clear();
           break;
         }

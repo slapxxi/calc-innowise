@@ -171,7 +171,7 @@ export function nthRoot(value: number, n: number, precision = 1e-10) {
 export function factorial(n: number) {
   if (n < 0) throw new Error('Factorial is not defined for negative numbers');
   let result = 1;
-  for (let i = 2; i <= n; i++) {
+  for (let i = n; i > 1; i--) {
     result *= i;
   }
   return result;

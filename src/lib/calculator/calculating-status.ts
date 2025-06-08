@@ -35,11 +35,8 @@ export class CalculatingStatus implements CalcStatus {
         break;
       case 'clear':
         if (calc.state.operand === null || calc.state.value === '0') {
-          calc.value = '0';
           calc.transition(CalculatorStatusEnum.Idle);
-          calc.state.operand = null;
-          calc.state.operator = null;
-          calc.state.allClear = true;
+          calc.resetState();
           calc.memory.clear();
           break;
         }

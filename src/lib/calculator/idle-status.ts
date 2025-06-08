@@ -12,6 +12,13 @@ export class IdleStatus implements CalcStatus {
     const calc = this.calculator;
 
     switch (event.type) {
+      case 'assign':
+        if (event.value !== '0') {
+          calc.transition(CalculatorStatusEnum.Result);
+          calc.value = event.value;
+          break;
+        }
+        break;
       case 'digit':
         if (event.value === '0') {
           break;
